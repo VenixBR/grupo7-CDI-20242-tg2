@@ -5,11 +5,11 @@ UFSM - Universidade Federal de Santa Maria - 2024.2
 Prof. Gabriel Machado Lunardi
 
 Integrantes:
--Bruno Henrique Spies
--Êmilly Farias Brunning
--Mathias Cirolini Michelotti
--Nathan Cezar
--Vinícius Gabriel Schultz
+- Bruno Henrique Spies
+- Êmilly Farias Brunning
+- Mathias Cirolini Michelotti
+- Nathan Cezar
+- Vinícius Gabriel Schultz
 
 ## LINKS
 
