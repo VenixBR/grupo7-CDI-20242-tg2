@@ -1,0 +1,76 @@
+##   Criação de tabelas ##
+
+
+CREATE TABLE Biblioteca (
+  Cod_biblioteca INT PRIMARY KEY,
+  Endereco VARCHAR(100),
+  Nome VARCHAR(50)
+);
+
+CREATE TABLE Centro (
+  Sigla VARCHAR(10) PRIMARY KEY,
+  Nome VARCHAR(50)
+);
+
+
+CREATE TABLE Autor (
+  Cod_Autor INT PRIMARY KEY,
+  Nome VARCHAR(50),
+  Pais VARCHAR(50)
+);
+
+
+CREATE TABLE Funcionario (
+  Cod_Funconario INT PRIMARY KEY,
+  Nome VARCHAR(50)
+);
+
+
+CREATE TABLE Pertence (
+  FOREIGN KEY (fk_Biblioteca_Cod) REFERENCES Biblioteca(Cod_Biblioteca),
+  FOREIGN KEY (fk_centro_Sigla) REFERENCES Centro(Sigla)
+);
+
+CREATE TABLE Aluno (
+  Matricula INT PRIMARY KEY,
+  Endereco VARCHAR(100),
+  Nome VARCHAR(50),
+  FOREIGN KEY (fk_centro_Sigla) REFERENCES Centro(Sigla)
+);
+
+CREATE TABLE Emprestimo (
+  Cod_emprestimo INT PRIMARY KEY,
+  Data DATE,
+  Hora TIME,
+  FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao),
+  FOREIGN KEY (fk_Aluno_matricula) REFERENCES Aluno(Matricula),
+  FOREIGN KEY (fk_Funcionario_Cod) REFERENCES Funcionario(Cod_Funcionario)
+);
+
+CREATE TABLE Publicacao (
+  Cod_Publicacao INT PRIMARY KEY,
+  Tipo VARCHAR(50),
+  ANO DATE,
+  FOREIGN KEY (fk_Biblioteca_Cod) REFERENCES Biblioteca(Cod_Biblioteca)
+);
+
+CREATE TABLE Academico (
+  Edição INT,
+  Area VARCHAR(50),
+  FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao)
+);
+
+CREATE TABLE Escrito (
+  FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao),
+  FOREIGN KEY (fk_Funcionario_Cod) REFERENCES Funcionario(Cod_Funcionario)
+);
+
+CREATE TABLE Literatura (
+  Genero_Textual VARCHAR(50),
+  FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao)
+);
+
+CREATE TABLE Autoajuda (
+  Assunto VARCHAR(50),
+  FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao)
+);
