@@ -55,7 +55,7 @@ CREATE TABLE Publicacao (
 );
 
 CREATE TABLE Academico (
-  Edição INT,
+  Edicao INT,
   Area VARCHAR(50),
   FOREIGN KEY (fk_Publicacao_Cod) REFERENCES Publicacao(Cod_Publicacao)
 );
