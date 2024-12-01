@@ -51,7 +51,7 @@ CREATE TABLE Emprestimo (
 
 CREATE TABLE Publicacao (
   Cod_Publicacao INT PRIMARY KEY,
-  Tipo VARCHAR(50),
+  Tipo VARCHAR(50) NULL,
   ANO DATE,
   FOREIGN KEY (fk_Biblioteca_Cod) REFERENCES Biblioteca(Cod_Biblioteca)
 );
