@@ -51,9 +51,9 @@ Os trabalhos foram realizados em equipe, promovendo a prática da colaboração 
 ## Tecnologias Utilizadas
 
 - **Banco de Dados:** MariaDB  
-- **Ferramentas de Modelagem:** BRModelo (versão desktop)  
+- **Ferramentas de Modelagem:** BRModelo (versão desktop), Apache NetBeans  
 - **Ferramentas de Documentação:** Overleaf (Latex), Canva, GIMP  
-- **Linguagens de Programação:** SQL (MariaDB), linguagens da aplicação (definir conforme implementação)  
+- **Linguagens de Programação:** SQL (MariaDB), Java  
 
 ---
 
