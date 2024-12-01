@@ -8,7 +8,8 @@ CREATE TABLE Biblioteca (
 );
 
 CREATE TABLE Centro (
-  Sigla VARCHAR(10) PRIMARY KEY,
+  Cod_Centro INT PRIMARY KEY,
+  Sigla VARCHAR(10),
   Nome VARCHAR(50)
 );
 
@@ -22,20 +23,21 @@ CREATE TABLE Autor (
 
 CREATE TABLE Funcionario (
   Cod_Funconario INT PRIMARY KEY,
+  Salario DECIMAL(10,2),
   Nome VARCHAR(50)
 );
 
 
 CREATE TABLE Pertence (
   FOREIGN KEY (fk_Biblioteca_Cod) REFERENCES Biblioteca(Cod_Biblioteca),
-  FOREIGN KEY (fk_centro_Sigla) REFERENCES Centro(Sigla)
+  FOREIGN KEY (fk_centro_Cod_Centro) REFERENCES Centro(Cod_Centro)
 );
 
 CREATE TABLE Aluno (
   Matricula INT PRIMARY KEY,
   Endereco VARCHAR(100),
   Nome VARCHAR(50),
-  FOREIGN KEY (fk_centro_Sigla) REFERENCES Centro(Sigla)
+  FOREIGN KEY (fk_centro_Cod_Centro) REFERENCES Centro(Cod_centro)
 );
 
 CREATE TABLE Emprestimo (
