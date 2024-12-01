@@ -22,7 +22,7 @@ CREATE TABLE Autor (
 
 
 CREATE TABLE Funcionario (
-  Cod_Funconario INT PRIMARY KEY,
+  Cod_Funcionario INT PRIMARY KEY,
   Salario DECIMAL(10,2),
   Nome VARCHAR(50)
 );
