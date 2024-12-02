@@ -69,7 +69,7 @@ CREATE TABLE Escrito (
   fk_Cod_Publicacao INT, 
   fk_Cod_Funcionario INT,
   FOREIGN KEY (fk_Cod_Publicacao) REFERENCES Publicacao(Cod_Publicacao),
-  FOREIGN KEY (fk_Cod_Funcionario) REFERENCES Funcionario(Cod_Funcionario)
+  FOREIGN KEY (fk_Cod_Autor) REFERENCES Autor(Cod_Autor)
 );
 
 CREATE TABLE Emprestimo (
