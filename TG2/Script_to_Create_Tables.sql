@@ -1,7 +1,7 @@
 CREATE TABLE Biblioteca (
   Cod_Biblioteca INT PRIMARY KEY,
   Endereco VARCHAR(100),
-  Nome VARCHAR(50)
+  Nome VARCHAR(100)
 );
 
 CREATE TABLE Centro (
