@@ -72,7 +72,7 @@ CREATE TABLE Escrito (
 );
 
 CREATE TABLE Emprestimo (
-  Cod_emprestimo INT PRIMARY KEY,
+  Cod_Emprestimo INT PRIMARY KEY,
   Data_ DATE,
   Hora TIME,
   fk_Cod_Publicaca INT,
