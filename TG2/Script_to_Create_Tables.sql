@@ -75,10 +75,10 @@ CREATE TABLE Emprestimo (
   Cod_Emprestimo INT PRIMARY KEY,
   Data_ DATE,
   Hora TIME,
-  fk_Cod_Publicaca INT,
+  fk_Cod_Publicacao INT,
   fk_Matricula int,
   fk_Cod_Funcionario INT,
-  FOREIGN KEY (fk_Cod_Publicaca) REFERENCES Publicacao(Cod_Publicacao),
+  FOREIGN KEY (fk_Cod_Publicacao) REFERENCES Publicacao(Cod_Publicacao),
   FOREIGN KEY (fk_Matricula) REFERENCES Aluno(Matricula),
   FOREIGN KEY (fk_Cod_Funcionario) REFERENCES Funcionario(Cod_Funcionario)
 );
