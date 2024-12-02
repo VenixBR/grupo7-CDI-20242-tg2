@@ -46,8 +46,9 @@ Os trabalhos foram realizados em equipe, promovendo a prática da colaboração 
 - **Relatório no Overleaf:**  
   https://www.overleaf.com/3999278164kctkqxgrzjrj#c2d821
 
-- **Diagrama de Casos de Uso da Interface Gráfica:**
-  https://lucid.app/lucidchart/e46739ce-546c-4fd7-b1e6-cdb28916de43/edit?invitationId=inv_a828a24d-8053-4274-a2d1-8b8e010d081c
+- **Diagrama de Casos de Uso da Interface Gráfica:** <br>
+    https://lucid.app/lucidchart/e46739ce-546c-4fd7-b1e6-cdb28916de43/edit?invitationId=inv_a828a24d-8053-4274-a2d1-8b8e010d081c
+   
   
 ---
 
