@@ -1,0 +1,12 @@
+DROP Table Academico;
+Drop table Autoajuda;
+Drop table Literatura;
+Drop table Escrito;
+Drop table Autor;
+Drop table Emprestimo;
+Drop table Publicacao;
+Drop table Funcionario;
+Drop table Aluno;
+Drop table Pertence;
+Drop table Centro;
+Drop table Biblioteca;
