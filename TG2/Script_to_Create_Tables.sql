@@ -1,7 +1,8 @@
 CREATE TABLE Biblioteca (
   Cod_Biblioteca INT PRIMARY KEY AUTO_INCREMENT,
   Endereco VARCHAR(100) NOT NULL,
-  Nome VARCHAR(100) NOT NULL
+  Nome VARCHAR(100) NOT NULL,
+  Sigla Varchar(10) NOT NULL
 );
 
 CREATE TABLE Centro (
@@ -41,6 +42,7 @@ CREATE TABLE Publicacao (
   Cod_Publicacao INT PRIMARY KEY AUTO_INCREMENT,
   Tipo VARCHAR(50) NULL,
   Ano DATE NOT NULL,
+  Nome VARCHAR(100) NOT NULL,
   fk_Cod_Biblioteca INT NOT NULL, 
   FOREIGN KEY (fk_Cod_Biblioteca) REFERENCES Biblioteca(Cod_Biblioteca)
 );
