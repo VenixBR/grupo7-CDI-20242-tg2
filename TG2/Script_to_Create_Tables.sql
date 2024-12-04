@@ -2,7 +2,7 @@ CREATE TABLE Biblioteca (
   Cod_Biblioteca INT PRIMARY KEY AUTO_INCREMENT,
   Endereco VARCHAR(100) NOT NULL,
   Nome VARCHAR(100) NOT NULL,
-  Sigla Varchar(10) NOT NULL
+  Sigla VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE Centro (
