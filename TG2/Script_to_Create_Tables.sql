@@ -70,12 +70,12 @@ VALUES
   (202220002, 'Rua das Flores', 'Pep Guardiola', 03),
   (202220003, 'Rua do Sol', 'Roger Machado', 04),
   (202220004, 'Avenida Brasil', 'Zinedine Zidane', 05),
-  (202220005, 'Rua da Liberdade', 'Diego Simeone', 06),
+  (202220005, 'Rua da Liberdade', 'Diego Simeone', 03),
   (202220006, 'Rua do Porto', 'Renato Gaúcho', 07),
   (202220007, 'Rua Rio de Janeiro', 'Antonio Conte', 08),
-  (202220008, 'Avenida São João', 'Arsène Wenger', 09),
+  (202220008, 'Avenida São João', 'Arsène Wenger', 03),
   (202220009, 'Rua do Carmo', 'Frank Lampard', 10),
-  (202220010, 'Rua das Palmeiras', 'David Moyes', 01),
+  (202220010, 'Rua das Palmeiras', 'David Moyes', 06),
   (202220011, 'Avenida dos Eucaliptos', 'Claudio Ranieri', 02),
   (202220012, 'Rua da Paz', 'Marcelo Bielsa', 03),
   (202220013, 'Rua do Parque', 'Tite', 04),
@@ -118,13 +118,13 @@ INSERT INTO Autor (Cod_Autor, Nome, Pais)
 VALUES
   (01, 'J.K. Rowling', 'Reino Unido'),
   (02, 'George Orwell', 'Reino Unido'),
-  (03, 'Haruki Murakami', 'Japão'),
+  (03, 'Clarice Lispector', 'Brasil'),
   (04, 'Gabriel García Márquez', 'Colômbia'),
   (05, 'Leo Tolstoy', 'Rússia'),
-  (06, 'Franz Kafka', 'Áustria'),
+  (06, 'Carlos Drummond', 'Brasil'),
   (07, 'Jane Austen', 'Reino Unido'),
   (08, 'Mark Twain', 'Estados Unidos'),
-  (09, 'Chimamanda Ngozi Adichie', 'Nigéria'),
+  (09, 'Machado de Assis', 'Brasil'),
   (10, 'Ernest Hemingway', 'Estados Unidos');
 
 
