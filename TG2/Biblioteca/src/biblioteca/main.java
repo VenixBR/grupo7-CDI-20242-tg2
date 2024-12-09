@@ -15,6 +15,11 @@ public class main extends javax.swing.JFrame {
      */
     public main() {
         initComponents();
+        TF_Pub_Edicao.setEnabled(false);
+        TF_Pub_Area.setEnabled(false);
+        TF_Pub_Genero.setEnabled(false);
+        TF_Pub_Assunto.setEnabled(false);
+        TF_Pub_Tipo.setEnabled(false);
     }
 
     /**
@@ -399,12 +404,17 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        TF_Pub_Area.setEditable(false);
+
         jLabel17.setText("Area:");
+
+        TF_Pub_Edicao.setEditable(false);
 
         jLabel36.setText("Ediçao:");
 
         jLabel37.setText("Genero:");
 
+        TF_Pub_Genero.setEditable(false);
         TF_Pub_Genero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TF_Pub_GeneroActionPerformed(evt);
@@ -412,6 +422,10 @@ public class main extends javax.swing.JFrame {
         });
 
         jLabel38.setText("Assunto:");
+
+        TF_Pub_Tipo.setEditable(false);
+
+        TF_Pub_Assunto.setEditable(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -451,7 +465,7 @@ public class main extends javax.swing.JFrame {
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(CheckBox_Outro)
                                         .addGap(18, 18, 18)
-                                        .addComponent(TF_Pub_Tipo)))
+                                        .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -521,9 +535,9 @@ public class main extends javax.swing.JFrame {
                     .addComponent(jLabel38)
                     .addComponent(TF_Pub_Assunto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CheckBox_Outro)
-                    .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CheckBox_Outro))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BT_Pub_Atualizar)
@@ -574,14 +588,13 @@ public class main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addComponent(jLabel3)
                                 .addGap(20, 20, 20)
                                 .addComponent(jTextField3))
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addContainerGap()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                                 .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -902,17 +915,17 @@ public class main extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jLabel6)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(jLabel5)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jTextField5)))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField5))))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(44, 44, 44)
                         .addComponent(BT_Centro_Inserir2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -977,29 +990,59 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton47ActionPerformed
 
     private void BT_Pub_InserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Pub_InserirActionPerformed
-        TF_Pub_Genero.setEditable(false);
+
     }//GEN-LAST:event_BT_Pub_InserirActionPerformed
 
     private void CheckBox_AcademicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBox_AcademicoActionPerformed
-        
-        TF_Pub_Genero.setEditable(false);
+        TF_Pub_Edicao.setEnabled(true);
+        TF_Pub_Area.setEnabled(true);
+        TF_Pub_Genero.setEnabled(false);
+        TF_Pub_Genero.setText("");
+        TF_Pub_Assunto.setEnabled(false);
+        TF_Pub_Assunto.setText("");
+        TF_Pub_Tipo.setEnabled(false);
+        TF_Pub_Tipo.setText("");
+
     }//GEN-LAST:event_CheckBox_AcademicoActionPerformed
 
     private void CheckBox_LiteraturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBox_LiteraturaActionPerformed
-        // TODO add your handling code here:
+        TF_Pub_Edicao.setEnabled(false);
+        TF_Pub_Edicao.setText("");
+        TF_Pub_Area.setEnabled(false);
+        TF_Pub_Area.setText("");
+        TF_Pub_Genero.setEnabled(true);
+        TF_Pub_Assunto.setEnabled(false);
+        TF_Pub_Assunto.setText("");
+        TF_Pub_Tipo.setEnabled(false);
+        TF_Pub_Tipo.setText("");
     }//GEN-LAST:event_CheckBox_LiteraturaActionPerformed
 
     private void CheckBox_AutoajudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBox_AutoajudaActionPerformed
-        // TODO add your handling code here:
+        TF_Pub_Edicao.setEnabled(false);
+        TF_Pub_Edicao.setText("");
+        TF_Pub_Area.setEnabled(false);
+        TF_Pub_Area.setText("");
+        TF_Pub_Genero.setEnabled(false);
+        TF_Pub_Genero.setText("");
+        TF_Pub_Assunto.setEnabled(true);
+        TF_Pub_Tipo.setEnabled(false);
+        TF_Pub_Tipo.setText("");
     }//GEN-LAST:event_CheckBox_AutoajudaActionPerformed
 
     private void CheckBox_OutroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckBox_OutroActionPerformed
-        // TODO add your handling code here:
+        TF_Pub_Edicao.setEnabled(false);
+        TF_Pub_Edicao.setText("");
+        TF_Pub_Area.setEnabled(false);
+        TF_Pub_Area.setText("");
+        TF_Pub_Genero.setEnabled(false);
+        TF_Pub_Genero.setText("");
+        TF_Pub_Assunto.setEnabled(false);
+        TF_Pub_Assunto.setText("");
+        TF_Pub_Tipo.setEnabled(true);
     }//GEN-LAST:event_CheckBox_OutroActionPerformed
 
     private void BT_Pub_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Pub_AtualizarActionPerformed
-        TF_Pub_Genero.setEditable(true);
-        TF_Pub_Genero.setText("ola");
+
     }//GEN-LAST:event_BT_Pub_AtualizarActionPerformed
 
     private void TF_Pub_GeneroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TF_Pub_GeneroActionPerformed
