@@ -8,10 +8,13 @@ FROM Autor
 WHERE Pais = 'Brasil';
 
 #Consulta o total de alunos cadastrados em cada centro
-SELECT fk_Cod_Centro AS Cod_Centro, 
-	COUNT(*) AS Total_Alunos
-FROM Aluno
-GROUP BY fk_Cod_Centro;
+SELECT 
+    c.Cod_Centro, 
+    c.Sigla, 
+    COUNT(a.Matricula) AS Total_Alunos
+FROM Aluno a
+JOIN Centro c ON a.fk_Cod_Centro = c.Cod_Centro
+GROUP BY c.Cod_Centro, c.Sigla
 
 #Consulta a quantidade de emprestimos para cada tipo de publicação
 SELECT Tipo AS Tipo_Publicacao, 
