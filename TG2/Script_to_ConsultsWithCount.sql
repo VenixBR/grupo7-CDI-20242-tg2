@@ -29,3 +29,10 @@ SELECT p.Tipo AS Tipo_Publicacao,
 FROM Publicacao p , Emprestimo e
 WHERE Cod_Publicacao = e.fk_Cod_Publicacao AND e.fk_Matricula = 202220003
 GROUP BY Tipo;
+
+#Listar quantidade de livros por biblioteca
+SELECT b.Nome AS Biblioteca, 
+       COUNT(p.Cod_Publicacao) AS Total_Livros
+FROM Biblioteca b
+LEFT JOIN Publicacao p ON b.Cod_Biblioteca = p.fk_Cod_Biblioteca
+GROUP BY b.Nome;
