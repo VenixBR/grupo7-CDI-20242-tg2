@@ -1,0 +1,7 @@
+#Lista quais funcionarios realizaram mais de 3 empréstimos (valor simbólico)
+SELECT f.Nome AS Funcionario, 
+       COUNT(e.Cod_Emprestimo) AS Total_Emprestimos
+FROM Funcionario f
+JOIN Emprestimo e ON f.Cod_Funcionario = e.fk_Cod_Funcionario
+GROUP BY f.Nome
+HAVING COUNT(e.Cod_Emprestimo) > 10;
