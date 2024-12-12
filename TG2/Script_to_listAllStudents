@@ -1,0 +1,5 @@
+#Lista todos os alunos e os centros que cada um pertence
+SELECT a.Nome AS Aluno, 
+       c.Nome AS Centro
+FROM Aluno a
+JOIN Centro c ON a.fk_Cod_Centro = c.Cod_Centro;
