@@ -82,13 +82,13 @@ VALUES
 
 INSERT INTO Publicacao (Cod_Publicacao, Tipo, Ano, Nome, fk_Cod_Biblioteca)
 VALUES
-  (01, 'Acadêmico', '2020-01-15', 'Introdução à Ciência de Dados', 01),
-  (02, 'Acadêmico', '2019-11-22', 'Matemática Avançada', 02),
-  (03, 'Acadêmico', '2018-08-13', 'Fundamentos de Engenharia', 03),
-  (04, 'Literatura', '2021-05-17', 'Romance Clássico', 04),
-  (05, 'Autoajuda', '2022-06-19', 'O Poder do Hábito', 05),
-  (06, 'Literatura', '2017-02-08', 'O Senhor dos Anéis', 06),
-  (07, 'Acadêmico', '2020-07-30', 'Física para Engenheiros', 07);
+  (01, 'Acadêmico', '2020', 'Introdução à Ciência de Dados', 01),
+  (02, 'Acadêmico', '2019', 'Matemática Avançada', 02),
+  (03, 'Acadêmico', '2018', 'Fundamentos de Engenharia', 03),
+  (04, 'Literatura', '2021', 'Romance Clássico', 04),
+  (05, 'Autoajuda', '2022', 'O Poder do Hábito', 05),
+  (06, 'Literatura', '2017', 'O Senhor dos Anéis', 06),
+  (07, 'Acadêmico', '2020', 'Física para Engenheiros', 07);
 
 INSERT INTO Academico (Edicao, Area, fk_Cod_Publicacao)
 VALUES
