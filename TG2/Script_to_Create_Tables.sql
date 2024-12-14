@@ -23,23 +23,21 @@ CREATE TABLE Biblioteca (
   Endereco VARCHAR(100) NOT NULL,
   Nome VARCHAR(100) NOT NULL,
   Sigla VARCHAR(10) NOT NULL
-  fk_Cod_Centro INT,
-  FOREIGN KEY (fk_Cod_Centro) REFERENCES Centro(Cod_Centro)
 );
 
-INSERT INTO Biblioteca (Cod_Biblioteca, Endereco, Nome, Sigla, fk_Cod_centro)
+INSERT INTO Biblioteca (Cod_Biblioteca, Endereco, Nome, Sigla)
 VALUES 
   (01, 'Street 1', 'Biblioteca Central', 'BC', NULL),
-  (02, 'Street 2', 'Biblioteca Setorial do Centro de Tecnologia', 'BSCT',(SELECT Cod_Centro FROM Centro WHERE Sigla="CT")),
-  (03, 'Street 3', 'Biblioteca Setorial do Centro de Ciências Rurais', 'BSCCR', (SELECT Cod_Centro FROM Centro WHERE Sigla="CCR")),
-  (04, 'Street 4', 'Biblioteca Setorial do Centro de Ciências Sociais e Humanas', 'BSCCSH', (SELECT Cod_Centro FROM Centro WHERE Sigla="CCSH")),
-  (05, 'Street 5', 'Biblioteca Setorial do Centro de Artes e Letras', 'BSCAL', (SELECT Cod_Centro FROM Centro WHERE Sigla="CAL")),
-  (06, 'Street 6', 'Biblioteca Setorial do Centro de Ciências Naturais e Exatas', 'BSCCNE', (SELECT Cod_Centro FROM Centro WHERE Sigla="CCNE")),
-  (07, 'Street 7', 'Biblioteca Setorial do Centro do Colégio Técnico Industrial de Santa Maria', 'BSCTISM', (SELECT Cod_Centro FROM Centro WHERE Sigla="CTISM")),
-  (08, 'Street 8', 'Biblioteca Setorial do Centro de Educação Física e Desporto', 'BSCEFD', (SELECT Cod_Centro FROM Centro WHERE Sigla="CEFD")),
-  (09, 'Street 9', 'Biblioteca Setorial do Centro de Educação', 'BSCE', (SELECT Cod_Centro FROM Centro WHERE Sigla="CE")),
-  (10, 'Street 10', 'Biblioteca Setorial do Centro do Colégio Politécnico', 'BSPOLI', (SELECT Cod_Centro FROM Centro WHERE Sigla="POLI")),
-  (11, 'Street 11', 'Biblioteca Setorial do Centro de Ciências da Saúde', 'BSCCS', (SELECT Cod_Centro FROM Centro WHERE Sigla="CCS"));
+  (02, 'Street 2', 'Biblioteca Setorial do Centro de Tecnologia', 'BSCT'),
+  (03, 'Street 3', 'Biblioteca Setorial do Centro de Ciências Rurais', 'BSCCR'),
+  (04, 'Street 4', 'Biblioteca Setorial do Centro de Ciências Sociais e Humanas', 'BSCCSH'),
+  (05, 'Street 5', 'Biblioteca Setorial do Centro de Artes e Letras', 'BSCAL'),
+  (06, 'Street 6', 'Biblioteca Setorial do Centro de Ciências Naturais e Exatas', 'BSCCNE'),
+  (07, 'Street 7', 'Biblioteca Setorial do Centro do Colégio Técnico Industrial de Santa Maria', 'BSCTISM'),
+  (08, 'Street 8', 'Biblioteca Setorial do Centro de Educação Física e Desporto', 'BSCEFD'),
+  (09, 'Street 9', 'Biblioteca Setorial do Centro de Educação', 'BSCE'),
+  (10, 'Street 10', 'Biblioteca Setorial do Centro do Colégio Politécnico', 'BSPOLI'),
+  (11, 'Street 11', 'Biblioteca Setorial do Centro de Ciências da Saúde', 'BSCCS');
 
 
 CREATE TABLE Pertence (
