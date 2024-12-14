@@ -27,7 +27,7 @@ CREATE TABLE Biblioteca (
 
 INSERT INTO Biblioteca (Cod_Biblioteca, Endereco, Nome, Sigla)
 VALUES 
-  (01, 'Street 1', 'Biblioteca Central', 'BC', NULL),
+  (01, 'Street 1', 'Biblioteca Central', 'BC'),
   (02, 'Street 2', 'Biblioteca Setorial do Centro de Tecnologia', 'BSCT'),
   (03, 'Street 3', 'Biblioteca Setorial do Centro de Ciências Rurais', 'BSCCR'),
   (04, 'Street 4', 'Biblioteca Setorial do Centro de Ciências Sociais e Humanas', 'BSCCSH'),
