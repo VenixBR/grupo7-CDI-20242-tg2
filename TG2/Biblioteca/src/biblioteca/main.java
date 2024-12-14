@@ -4,6 +4,10 @@
  */
 package biblioteca;
 
+import Entitys.Centro;
+import biblioteca.DAOUser;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author desenvolvimento
@@ -35,11 +39,11 @@ public class main extends javax.swing.JFrame {
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable7 = new javax.swing.JTable();
-        BT_Centro_Inserir = new javax.swing.JButton();
+        TB_Centro = new javax.swing.JTable();
+        BT_Centro_Cadastrar = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
         TF_Centro_Sigla = new javax.swing.JTextField();
-        jTextField10 = new javax.swing.JTextField();
+        TF_Centro_Nome = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jButton33 = new javax.swing.JButton();
@@ -136,28 +140,25 @@ public class main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable7.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Centro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Codigo", "Nome", "Sigla"
             }
         ));
-        jScrollPane7.setViewportView(jTable7);
-        if (jTable7.getColumnModel().getColumnCount() > 0) {
-            jTable7.getColumnModel().getColumn(0).setPreferredWidth(30);
-            jTable7.getColumnModel().getColumn(1).setPreferredWidth(800);
-            jTable7.getColumnModel().getColumn(2).setPreferredWidth(30);
+        jScrollPane7.setViewportView(TB_Centro);
+        if (TB_Centro.getColumnModel().getColumnCount() > 0) {
+            TB_Centro.getColumnModel().getColumn(0).setPreferredWidth(30);
+            TB_Centro.getColumnModel().getColumn(1).setPreferredWidth(800);
+            TB_Centro.getColumnModel().getColumn(2).setPreferredWidth(30);
         }
 
-        BT_Centro_Inserir.setText("Inserir");
-        BT_Centro_Inserir.addActionListener(new java.awt.event.ActionListener() {
+        BT_Centro_Cadastrar.setText("Cadastrar");
+        BT_Centro_Cadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BT_Centro_InserirActionPerformed(evt);
+                BT_Centro_CadastrarActionPerformed(evt);
             }
         });
 
@@ -181,14 +182,14 @@ public class main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(BT_Centro_Inserir, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton32)
                         .addGap(0, 33, Short.MAX_VALUE))
                     .addComponent(TF_Centro_Sigla)
-                    .addComponent(jTextField10))
+                    .addComponent(TF_Centro_Nome))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -205,13 +206,13 @@ public class main extends javax.swing.JFrame {
                     .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TF_Centro_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton33)
                     .addComponent(jButton32)
-                    .addComponent(BT_Centro_Inserir))
+                    .addComponent(BT_Centro_Cadastrar))
                 .addGap(19, 19, 19))
         );
 
@@ -465,7 +466,7 @@ public class main extends javax.swing.JFrame {
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(CheckBox_Outro)
                                         .addGap(18, 18, 18)
-                                        .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)))
+                                        .addComponent(TF_Pub_Tipo)))
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -977,9 +978,24 @@ public class main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BT_Centro_InserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_InserirActionPerformed
-        TF_Centro_Sigla.setText("CT");
-    }//GEN-LAST:event_BT_Centro_InserirActionPerformed
+    private void BT_Centro_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_CadastrarActionPerformed
+        new DAOUser().CadastrarCentro(new Centro(
+                TF_Centro_Nome.getText(), 
+                TF_Centro_Sigla.getText()
+        ));
+        
+        int id = new DAOUser().BuscarCentro(TF_Centro_Sigla.getText());
+        
+        System.out.println(id);
+        
+        Centro temp = new Centro();
+        temp = new DAOUser().BuscarCentro(id); 
+        
+        DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
+        Object[] data = {temp.getCod_Centro(), temp.getNome(), temp.getSigla()};
+        Table_Centro.addRow(data);
+              
+    }//GEN-LAST:event_BT_Centro_CadastrarActionPerformed
 
     private void jTextField13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField13ActionPerformed
         // TODO add your handling code here:
@@ -1109,7 +1125,7 @@ public class main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BT_Centro_Inserir;
+    private javax.swing.JButton BT_Centro_Cadastrar;
     private javax.swing.JButton BT_Centro_Inserir1;
     private javax.swing.JButton BT_Centro_Inserir2;
     private javax.swing.JButton BT_Centro_Inserir3;
@@ -1120,6 +1136,8 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JRadioButton CheckBox_Autoajuda;
     private javax.swing.JRadioButton CheckBox_Literatura;
     private javax.swing.JRadioButton CheckBox_Outro;
+    private javax.swing.JTable TB_Centro;
+    private javax.swing.JTextField TF_Centro_Nome;
     private javax.swing.JTextField TF_Centro_Sigla;
     private javax.swing.JTextField TF_Pub_Ano;
     private javax.swing.JTextField TF_Pub_Area;
@@ -1197,9 +1215,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTable jTable4;
     private javax.swing.JTable jTable5;
     private javax.swing.JTable jTable6;
-    private javax.swing.JTable jTable7;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
     private javax.swing.JTextField jTextField15;

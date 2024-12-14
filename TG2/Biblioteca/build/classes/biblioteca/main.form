@@ -65,15 +65,15 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="BT_Centro_Inserir" min="-2" pref="90" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="BT_Centro_Cadastrar" min="-2" pref="96" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton33" min="-2" pref="90" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jButton32" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="33" max="32767" attributes="0"/>
                           </Group>
                           <Component id="TF_Centro_Sigla" alignment="0" max="32767" attributes="0"/>
-                          <Component id="jTextField10" alignment="0" max="32767" attributes="0"/>
+                          <Component id="TF_Centro_Nome" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Component id="jScrollPane7" min="-2" pref="1010" max="-2" attributes="0"/>
@@ -95,14 +95,14 @@
                       </Group>
                       <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jTextField10" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="TF_Centro_Nome" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButton33" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jButton32" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="BT_Centro_Inserir" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="BT_Centro_Cadastrar" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   </Group>
@@ -117,10 +117,10 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="jTable7">
+                <Component class="javax.swing.JTable" name="TB_Centro">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="3" rowCount="4">
+                      <Table columnCount="3" rowCount="0">
                         <Column editable="true" title="Codigo" type="java.lang.Object"/>
                         <Column editable="true" title="Nome" type="java.lang.Object"/>
                         <Column editable="true" title="Sigla" type="java.lang.Object"/>
@@ -152,12 +152,12 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="BT_Centro_Inserir">
+            <Component class="javax.swing.JButton" name="BT_Centro_Cadastrar">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Inserir"/>
+                <Property name="text" type="java.lang.String" value="Cadastrar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BT_Centro_InserirActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BT_Centro_CadastrarActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButton32">
@@ -167,7 +167,7 @@
             </Component>
             <Component class="javax.swing.JTextField" name="TF_Centro_Sigla">
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextField10">
+            <Component class="javax.swing.JTextField" name="TF_Centro_Nome">
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel12">
               <Properties>
@@ -436,7 +436,7 @@
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="CheckBox_Outro" min="-2" max="-2" attributes="0"/>
                                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                                              <Component id="TF_Pub_Tipo" pref="306" max="32767" attributes="0"/>
+                                              <Component id="TF_Pub_Tipo" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
