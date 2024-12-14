@@ -61,6 +61,32 @@ public class DAOUser {
         return lib;
     }
     
+    // Função para excluir a biblioteca pelo código
+    public void ExcluirBiblioteca(int Cod_Biblioteca){
+        String SQL_command = "DELETE FROM Biblioteca WHERE Cod_Biblioteca=?";
+        PreparedStatement ps = null;
+
+        try {
+            ps = conection.getConnection().prepareStatement(SQL_command);
+            ps.setInt(1, Cod_Biblioteca);
+
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas > 0) {
+                System.out.println("Biblioteca excluída com sucesso!");
+            } else {
+                System.out.println("Nenhuma biblioteca encontrada para excluir.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            
+        }
+    }
 
 
 
