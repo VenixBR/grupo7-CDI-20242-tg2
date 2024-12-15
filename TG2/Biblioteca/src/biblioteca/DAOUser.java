@@ -113,20 +113,19 @@ public class DAOUser {
         return lib;
     }
     
-    public int BuscarCentro(String Sigla){
+    public int ReturnLastCod(String tabela){
 
-        int id = 0;
-        String SQL_command = "SELECT Cod_Centro FROM Centro WHERE Sigla=?";
+        int id = -1;
+        String SQL_command = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA='CD_II_Work' AND TABLE_NAME='" + tabela + "'";
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
-            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
-            ps.setString(1, Sigla);
+            ps = conection.getConnection().prepareStatement(SQL_command);
             rs = ps.executeQuery();
 
             if(rs.next()){
-                id = rs.getInt("Cod_Centro");
+                id = rs.getInt("Auto_increment");
             } 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -138,7 +137,7 @@ public class DAOUser {
                 e.printStackTrace();
             }
         }
-        return id;
+        return id-1;
     }
     
 }
