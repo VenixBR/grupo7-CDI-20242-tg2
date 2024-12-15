@@ -4,12 +4,14 @@
  */
 package biblioteca;
 
+import DAOUser.DAO_Centro;
 import Entitys.Centro;
 import Exceptions.NomeCentroGrande;
 import Exceptions.NomeCentroVazio;
 import Exceptions.SiglaCentroGrande;
 import Exceptions.SiglaCentroVazio;
-import biblioteca.DAOUser;
+import DAOUser.DAO_General;
+import Exceptions.SiglaUsada;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.sql.*;
@@ -389,7 +391,7 @@ public class main extends javax.swing.JFrame {
         jScrollPane7 = new javax.swing.JScrollPane();
         TB_Centro = new javax.swing.JTable();
         BT_Centro_Cadastrar = new javax.swing.JButton();
-        jButton32 = new javax.swing.JButton();
+        BT_Centro_Remover = new javax.swing.JButton();
         TF_Centro_Sigla = new javax.swing.JTextField();
         TF_Centro_Nome = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
@@ -499,6 +501,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Sigla", "Nome"
             }
         ));
+        TB_Centro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_CentroMouseClicked(evt);
+            }
+        });
         jScrollPane7.setViewportView(TB_Centro);
         if (TB_Centro.getColumnModel().getColumnCount() > 0) {
             TB_Centro.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -513,7 +520,12 @@ public class main extends javax.swing.JFrame {
             }
         });
 
-        jButton32.setText("Remover");
+        BT_Centro_Remover.setText("Remover");
+        BT_Centro_Remover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BT_Centro_RemoverActionPerformed(evt);
+            }
+        });
 
         jLabel12.setText("Sigla:");
 
@@ -528,32 +540,29 @@ public class main extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(TF_Centro_Sigla)
-                                    .addComponent(TF_Centro_Nome))
-                                .addGap(18, 18, 18))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(49, 49, 49)
-                                .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton32)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE))))
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel12))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TF_Centro_Sigla)
+                            .addComponent(TF_Centro_Nome)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(34, 34, 34)
-                        .addComponent(Warning_Centro)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 831, Short.MAX_VALUE)
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Warning_Centro, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(BT_Centro_Remover)))
+                        .addGap(0, 12, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -562,9 +571,7 @@ public class main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(Warning_Centro)
-                .addGap(27, 27, 27)
+                .addGap(32, 32, 32)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TF_Centro_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
@@ -573,9 +580,11 @@ public class main extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Warning_Centro, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton33)
-                    .addComponent(jButton32)
+                    .addComponent(BT_Centro_Remover)
                     .addComponent(BT_Centro_Cadastrar))
                 .addGap(19, 19, 19))
         );
@@ -1363,22 +1372,28 @@ public class main extends javax.swing.JFrame {
             else if (nome.length()>50){
                 throw new NomeCentroGrande();
             }
+            else if(DAO_Centro.TestaSigla(TF_Centro_Sigla.getText()) == true){
+                throw new SiglaUsada();
+            }
             
             
-            new DAOUser().CadastrarCentro(new Centro(nome, sigla));
+            new DAO_Centro().CadastrarCentro(new Centro(nome, sigla));
        
         
-            int id = new DAOUser().ReturnLastCod("Centro");
+            int id = new DAO_General().ReturnLastCod("Centro");
         
             Centro temp = new Centro();
-            temp = new DAOUser().BuscarCentro(id); 
+            temp = new DAO_Centro().BuscarCentro(id); 
         
             DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
             Object[] data = {temp.getCod_Centro(),  temp.getSigla(), temp.getNome()};
             Table_Centro.addRow(data);
+            
+            TF_Centro_Nome.setText("");
+            TF_Centro_Sigla.setText("");
         }
         catch(SiglaCentroGrande e){
-            Warning_Centro.setText("Sigla pode ter no máximo 10 caráç");
+            Warning_Centro.setText("Sigla pode ter no máximo 10 caracteres");
         }
         catch(NomeCentroGrande e){
             Warning_Centro.setText("Nome pode ter no máximo 50 caractéres");
@@ -1388,6 +1403,9 @@ public class main extends javax.swing.JFrame {
         }
         catch(SiglaCentroVazio e){
             Warning_Centro.setText("Sigla nao informada");
+        }
+        catch(SiglaUsada e){
+            Warning_Centro.setText("Sigla ja esta sendo usada");
         }
         
             
@@ -1486,6 +1504,34 @@ public class main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_BT_Centro_Inserir4ActionPerformed
 
+    private void BT_Centro_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_RemoverActionPerformed
+       
+        //Testa se tem alguma linha selecionada
+        if(TB_Centro.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Centro.getValueAt(TB_Centro.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
+            Table_Centro.removeRow(TB_Centro.getSelectedRow());
+           
+            new DAO_Centro().RemoverCentro(id);
+            
+            TF_Centro_Nome.setText("");
+            TF_Centro_Sigla.setText("");
+        }    
+        else
+            Warning_Centro.setText("Nenhuma linha selecionada");
+            //
+            //Object[] data = {temp.getCod_Centro(),  temp.getSigla(), temp.getNome()};
+            //Table_Centro.addRow(data);
+    }//GEN-LAST:event_BT_Centro_RemoverActionPerformed
+
+    private void TB_CentroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_CentroMouseClicked
+        TF_Centro_Nome.setText((String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(), 2));
+        TF_Centro_Sigla.setText((String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(), 1));
+    }//GEN-LAST:event_TB_CentroMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -1527,6 +1573,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JButton BT_Centro_Inserir2;
     private javax.swing.JButton BT_Centro_Inserir3;
     private javax.swing.JButton BT_Centro_Inserir4;
+    private javax.swing.JButton BT_Centro_Remover;
     private javax.swing.JButton BT_Pub_Atualizar;
     private javax.swing.JButton BT_Pub_Inserir;
     private javax.swing.JRadioButton CheckBox_Academico;
@@ -1545,7 +1592,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTextField TF_Pub_Tipo;
     private javax.swing.JLabel Warning_Centro;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
     private javax.swing.JButton jButton34;
     private javax.swing.JButton jButton35;
