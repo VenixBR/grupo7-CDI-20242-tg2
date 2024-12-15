@@ -7,6 +7,10 @@ package biblioteca;
 import Entitys.Centro;
 import biblioteca.DAOUser;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
+import java.sql.*;
+import java.sql.SQLException;
+
 
 /**
  *
@@ -14,6 +18,339 @@ import javax.swing.table.DefaultTableModel;
  */
 public class main extends javax.swing.JFrame {
 
+	// Variável de conexão
+	private Connection conn;
+
+	// Método para conectar ao banco de dados (se necessário)
+	private void conectar() throws SQLException {
+	    // Verifica se a conexão não foi estabelecida ou está fechada
+	    if (conn == null || conn.isClosed()) {
+	        conn = SQL_connection.getConnection(); // Estabelece a conexão com o banco
+	    }
+	}
+
+	// Método para preencher a tabela com os centros
+	private void carregarCentros() {
+	    // Certifica-se de que a conexão foi estabelecida antes de usá-la
+	    try {
+	        // Conectar ao banco de dados, caso a conexão ainda não tenha sido feita
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        // Query SQL para buscar os dados
+	        String query = "SELECT * FROM centro"; 
+	        Statement stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery(query);
+
+	        // Atualiza a tabela com os dados recuperados
+	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os resultados da consulta
+	        while (rs.next()) {
+	            // Adiciona os dados à tabela
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("nome"), rs.getString("sigla") };
+	            model.addRow(row);
+	        }
+
+	        // Fecha os recursos (Statement e ResultSet)
+	        rs.close();
+	        stmt.close();
+
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+
+	// Método para fechar a conexão
+	public void fecharConexao() throws SQLException {
+	    if (conn != null && !conn.isClosed()) {
+	        conn.close(); // Fecha a conexão ao banco de dados
+	    }
+	}
+
+	// Método para preencher a tabela com os alunos
+	private void carregarAlunos() {
+	    // Certifica-se de que a conexão foi estabelecida antes de usá-la
+	    try {
+	        // Verifica e garante que a conexão com o banco de dados esteja aberta
+	        if (conn == null || conn.isClosed()) {
+	            conectar(); // Estabelece a conexão se ainda não foi feita
+	        }
+
+	        // Query SQL para buscar os dados dos alunos
+	        String query = "SELECT * FROM Aluno"; 
+	        Statement stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery(query);
+
+	        // Atualiza a tabela com os dados recuperados
+	        DefaultTableModel model = (DefaultTableModel) jTable6.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os resultados da consulta
+	        while (rs.next()) {
+	            // Adiciona os dados de cada aluno à tabela
+	            Object[] row = {
+	                rs.getInt("Matricula"),  // Matricula do aluno
+	                rs.getString("Nome"),     // Nome do aluno
+	                rs.getString("Endereco"), // Endereço do aluno
+	                rs.getInt("fk_Cod_Centro") // Código do centro associado ao aluno
+	            };
+	            model.addRow(row); // Adiciona a linha na tabela
+	        }
+
+	        // Fecha os recursos (Statement e ResultSet)
+	        rs.close();
+	        stmt.close();
+
+	    } catch (SQLException ex) {
+	        // Exibe a mensagem de erro caso ocorra
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados dos alunos: " + ex.getMessage());
+	    }
+	}
+	
+	private void carregarPublicacoes() {
+	    // A consulta SQL agora faz joins com as tabelas relacionadas
+	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Nome AS Biblioteca, " +
+	                   "a.Edicao, a.Area, " +
+	                   "l.Genero_Textual, " +
+	                   "au.Assunto, " +
+	                   "e.fk_Cod_Autor " +
+	                   "FROM Publicacao p " +
+	                   "JOIN Biblioteca b ON p.fk_Cod_Biblioteca = b.Cod_Biblioteca " +
+	                   "LEFT JOIN Academico a ON p.Cod_Publicacao = a.fk_Cod_Publicacao " +
+	                   "LEFT JOIN Literatura l ON p.Cod_Publicacao = l.fk_Cod_Publicacao " +
+	                   "LEFT JOIN Autoajuda au ON p.Cod_Publicacao = au.fk_Cod_Publicacao " +
+	                   "LEFT JOIN Escrito e ON p.Cod_Publicacao = e.fk_Cod_Publicacao";
+
+	    // Declaração dos objetos fora do bloco try
+	    Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = SQL_connection.getConnection();  // Obtém a conexão do banco de dados
+	        stmt = conn.createStatement();  // Cria o Statement
+	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+
+	        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenchendo a tabela com os resultados
+	        while (rs.next()) {
+	            Object[] row = {
+	                rs.getInt("Cod_Publicacao"),  // Código da publicação
+	                rs.getString("Nome"),  // Nome da publicação
+	                rs.getDate("Ano"),  // Ano da publicação
+	                rs.getString("Biblioteca"),  // Nome da biblioteca
+	                rs.getString("Tipo"),  // Tipo de publicação
+	                rs.getInt("Edicao"),  // Edição (de Academico)
+	                rs.getString("Area"),  // Área (de Academico)
+	                rs.getString("Genero_Textual"),  // Gênero textual (de Literatura)
+	                rs.getString("Assunto"),  // Assunto (de Autoajuda)
+	            };
+	            model.addRow(row);  // Adiciona os dados à tabela
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    } finally {
+	        // Fechando o ResultSet e o Statement, mas NÃO fechando a conexão
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	        }
+	    }
+	}
+
+	private void carregarAutores() {
+	    // Consulta SQL para buscar os autores diretamente da tabela
+	    String query = "SELECT Cod_Autor, Nome, Pais FROM Autor";
+
+	    // Declaração dos objetos fora do bloco try
+	    Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
+	        stmt = conn.createStatement();  // Cria o Statement
+	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+
+	        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os dados dos autores
+	        while (rs.next()) {
+	            Object[] row = {
+	                rs.getInt("Cod_Autor"),  // Código do autor
+	                rs.getString("Nome"),     // Nome do autor
+	                rs.getString("Pais")      // País do autor
+	            };
+	            model.addRow(row);  // Adiciona a linha à tabela
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    } finally {
+	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	        }
+	    }
+	}
+
+	private void carregarBibliotecas() {
+	    // Consulta SQL para buscar os dados das bibliotecas
+	    String query = "SELECT Cod_Biblioteca, Nome, Endereco, Sigla FROM Biblioteca";
+
+	    // Declaração dos objetos fora do bloco try
+	    Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
+	        stmt = conn.createStatement();  // Cria o Statement
+	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+
+	        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os dados das bibliotecas
+	        while (rs.next()) {
+	            Object[] row = {
+	                rs.getInt("Cod_Biblioteca"),  // Código da biblioteca
+	                rs.getString("Nome"),         // Nome da biblioteca
+	                rs.getString("Endereco"),     // Endereço da biblioteca
+	                rs.getString("Sigla")         // Sigla da biblioteca
+	            };
+	            model.addRow(row);  // Adiciona a linha à tabela
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    } finally {
+	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	        }
+	    }
+	}
+	
+	private void carregarFuncionarios() {
+	    // Consulta SQL para buscar os dados dos funcionários
+	    String query = "SELECT Cod_Funcionario, Nome, Salario FROM Funcionario";
+
+	    // Declaração dos objetos fora do bloco try
+	    Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
+	        stmt = conn.createStatement();  // Cria o Statement
+	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+
+	        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os dados dos funcionários
+	        while (rs.next()) {
+	            Object[] row = {
+	                rs.getInt("Cod_Funcionario"),  // Código do funcionário
+	                rs.getString("Nome"),           // Nome do funcionário
+	                rs.getBigDecimal("Salario")     // Salário do funcionário
+	            };
+	            model.addRow(row);  // Adiciona a linha à tabela
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    } finally {
+	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	        }
+	    }
+	}
+	
+	private void carregarEmprestimos() {
+	    // Consulta SQL para buscar os dados dos empréstimos
+	    String query = "SELECT e.Cod_Emprestimo, e.Data_, e.Hora, " +
+	                   "p.Nome AS Publicacao, a.Nome AS Aluno, f.Nome AS Funcionario " +
+	                   "FROM Emprestimo e " +
+	                   "JOIN Publicacao p ON e.fk_Cod_Publicacao = p.Cod_Publicacao " +
+	                   "JOIN Aluno a ON e.fk_Matricula = a.Matricula " +
+	                   "JOIN Funcionario f ON e.fk_Cod_Funcionario = f.Cod_Funcionario";
+
+	    // Declaração dos objetos fora do bloco try
+	    Connection conn = null;
+	    Statement stmt = null;
+	    ResultSet rs = null;
+
+	    try {
+	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
+	        stmt = conn.createStatement();  // Cria o Statement
+	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+
+	        DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        // Preenche a tabela com os dados dos empréstimos
+	        while (rs.next()) {
+	            Object[] row = {
+	                rs.getInt("Cod_Emprestimo"),    // Código do empréstimo
+	                rs.getDate("Data_"),            // Data do empréstimo
+	                rs.getTime("Hora"),             // Hora do empréstimo
+	                rs.getString("Funcionario"),    // Nome do funcionário que registrou o empréstimo
+	                rs.getString("Publicacao"),     // Nome da publicação emprestada
+	                rs.getString("Aluno")          // Nome do aluno que fez o empréstimo
+	            };
+	            model.addRow(row);  // Adiciona a linha à tabela
+	        }
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    } finally {
+	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stmt != null) {
+	                stmt.close();
+	            }
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	        }
+	    }
+	}
+
+	
     /**
      * Creates new form main
      */
@@ -24,6 +361,13 @@ public class main extends javax.swing.JFrame {
         TF_Pub_Genero.setEnabled(false);
         TF_Pub_Assunto.setEnabled(false);
         TF_Pub_Tipo.setEnabled(false);
+        carregarCentros(); // Chama o método para carregar os centros automaticamente
+        carregarAlunos();
+        carregarPublicacoes();  // Chama a função para carregar os dados de publicações
+        carregarAutores();
+        carregarBibliotecas();
+        carregarFuncionarios();
+        carregarEmprestimos();
     }
 
     /**
