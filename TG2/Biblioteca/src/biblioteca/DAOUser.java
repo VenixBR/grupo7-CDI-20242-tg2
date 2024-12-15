@@ -121,7 +121,7 @@ public class DAOUser {
         ResultSet rs = null;
 
         try {
-            ps = conection.getConnection().prepareStatement(SQL_command);
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
             rs = ps.executeQuery();
 
             if(rs.next()){

@@ -5,6 +5,10 @@
 package biblioteca;
 
 import Entitys.Centro;
+import Exceptions.NomeCentroGrande;
+import Exceptions.NomeCentroVazio;
+import Exceptions.SiglaCentroGrande;
+import Exceptions.SiglaCentroVazio;
 import biblioteca.DAOUser;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
@@ -39,7 +43,7 @@ public class main extends javax.swing.JFrame {
 	        }
 
 	        // Query SQL para buscar os dados
-	        String query = "SELECT * FROM centro"; 
+	        String query = "SELECT * FROM Centro"; 
 	        Statement stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 
@@ -50,7 +54,7 @@ public class main extends javax.swing.JFrame {
 	        // Preenche a tabela com os resultados da consulta
 	        while (rs.next()) {
 	            // Adiciona os dados à tabela
-	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("nome"), rs.getString("sigla") };
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
 	            model.addRow(row);
 	        }
 
@@ -94,8 +98,8 @@ public class main extends javax.swing.JFrame {
 	            Object[] row = {
 	                rs.getInt("Matricula"),  // Matricula do aluno
 	                rs.getString("Nome"),     // Nome do aluno
-	                rs.getString("Endereco"), // Endereço do aluno
-	                rs.getInt("fk_Cod_Centro") // Código do centro associado ao aluno
+	                rs.getInt("fk_Cod_Centro"), // Código do centro associado ao aluno
+	                rs.getString("Endereco") // Endereço do aluno
 	            };
 	            model.addRow(row); // Adiciona a linha na tabela
 	        }
@@ -112,7 +116,7 @@ public class main extends javax.swing.JFrame {
 	
 	private void carregarPublicacoes() {
 	    // A consulta SQL agora faz joins com as tabelas relacionadas
-	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Nome AS Biblioteca, " +
+	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Sigla AS Biblioteca, " +
 	                   "a.Edicao, a.Area, " +
 	                   "l.Genero_Textual, " +
 	                   "au.Assunto, " +
@@ -142,7 +146,7 @@ public class main extends javax.swing.JFrame {
 	            Object[] row = {
 	                rs.getInt("Cod_Publicacao"),  // Código da publicação
 	                rs.getString("Nome"),  // Nome da publicação
-	                rs.getDate("Ano"),  // Ano da publicação
+	                rs.getInt("Ano"),  // Ano da publicação
 	                rs.getString("Biblioteca"),  // Nome da biblioteca
 	                rs.getString("Tipo"),  // Tipo de publicação
 	                rs.getInt("Edicao"),  // Edição (de Academico)
@@ -233,9 +237,9 @@ public class main extends javax.swing.JFrame {
 	        while (rs.next()) {
 	            Object[] row = {
 	                rs.getInt("Cod_Biblioteca"),  // Código da biblioteca
+                        rs.getString("Sigla"),         // Sigla da biblioteca
 	                rs.getString("Nome"),         // Nome da biblioteca
-	                rs.getString("Endereco"),     // Endereço da biblioteca
-	                rs.getString("Sigla")         // Sigla da biblioteca
+	                rs.getString("Endereco")     // Endereço da biblioteca
 	            };
 	            model.addRow(row);  // Adiciona a linha à tabela
 	        }
@@ -391,6 +395,7 @@ public class main extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jButton33 = new javax.swing.JButton();
+        Warning_Centro = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTable6 = new javax.swing.JTable();
@@ -484,19 +489,21 @@ public class main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTabbedPane1.setPreferredSize(new java.awt.Dimension(1300, 640));
+
         TB_Centro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Codigo", "Nome", "Sigla"
+                "Codigo", "Sigla", "Nome"
             }
         ));
         jScrollPane7.setViewportView(TB_Centro);
         if (TB_Centro.getColumnModel().getColumnCount() > 0) {
             TB_Centro.getColumnModel().getColumn(0).setPreferredWidth(30);
-            TB_Centro.getColumnModel().getColumn(1).setPreferredWidth(800);
-            TB_Centro.getColumnModel().getColumn(2).setPreferredWidth(30);
+            TB_Centro.getColumnModel().getColumn(1).setPreferredWidth(30);
+            TB_Centro.getColumnModel().getColumn(2).setPreferredWidth(600);
         }
 
         BT_Centro_Cadastrar.setText("Cadastrar");
@@ -514,28 +521,39 @@ public class main extends javax.swing.JFrame {
 
         jButton33.setText("Atualizar");
 
+        Warning_Centro.setForeground(new java.awt.Color(255, 0, 51));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel13))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton32)
-                        .addGap(0, 33, Short.MAX_VALUE))
-                    .addComponent(TF_Centro_Sigla)
-                    .addComponent(TF_Centro_Nome))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel12))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(TF_Centro_Sigla)
+                                    .addComponent(TF_Centro_Nome))
+                                .addGap(18, 18, 18))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(49, 49, 49)
+                                .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton32)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(Warning_Centro)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 831, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -544,14 +562,16 @@ public class main extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel12)
-                    .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15)
+                .addGap(4, 4, 4)
+                .addComponent(Warning_Centro)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TF_Centro_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton33)
@@ -559,6 +579,8 @@ public class main extends javax.swing.JFrame {
                     .addComponent(BT_Centro_Cadastrar))
                 .addGap(19, 19, 19))
         );
+
+        Warning_Centro.getAccessibleContext().setAccessibleName("Warning_Centro");
 
         jTabbedPane1.addTab("Centro", jPanel2);
 
@@ -570,15 +592,15 @@ public class main extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Matricula", "Nome", "Endereço", "Centro"
+                "Matricula", "Nome", "Centro", "Endereço"
             }
         ));
         jScrollPane6.setViewportView(jTable6);
         if (jTable6.getColumnModel().getColumnCount() > 0) {
-            jTable6.getColumnModel().getColumn(0).setPreferredWidth(30);
+            jTable6.getColumnModel().getColumn(0).setPreferredWidth(100);
             jTable6.getColumnModel().getColumn(1).setPreferredWidth(300);
-            jTable6.getColumnModel().getColumn(2).setPreferredWidth(300);
-            jTable6.getColumnModel().getColumn(3).setPreferredWidth(40);
+            jTable6.getColumnModel().getColumn(2).setPreferredWidth(40);
+            jTable6.getColumnModel().getColumn(3).setPreferredWidth(300);
         }
 
         jTextField13.addActionListener(new java.awt.event.ActionListener() {
@@ -629,14 +651,14 @@ public class main extends javax.swing.JFrame {
                             .addComponent(jComboBox8, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addContainerGap(55, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton47, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton46, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton48)
                         .addGap(51, 51, 51)))
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 847, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -673,22 +695,22 @@ public class main extends javax.swing.JFrame {
 
         jTable5.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Codigo", "Nome", "Ano", "Biblioteca", "Tipo", "Ediçao", "Area", "Genero", "Assunto"
+                "Codigo", "Nome", "Ano", "Biblioteca", "Tipo"
             }
         ));
         jScrollPane5.setViewportView(jTable5);
         if (jTable5.getColumnModel().getColumnCount() > 0) {
             jTable5.getColumnModel().getColumn(0).setPreferredWidth(30);
-            jTable5.getColumnModel().getColumn(1).setPreferredWidth(300);
-            jTable5.getColumnModel().getColumn(2).setPreferredWidth(30);
+            jTable5.getColumnModel().getColumn(1).setPreferredWidth(400);
+            jTable5.getColumnModel().getColumn(2).setPreferredWidth(40);
             jTable5.getColumnModel().getColumn(3).setPreferredWidth(40);
-            jTable5.getColumnModel().getColumn(5).setPreferredWidth(20);
+            jTable5.getColumnModel().getColumn(4).setPreferredWidth(100);
         }
 
         jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -776,7 +798,7 @@ public class main extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+            .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
@@ -826,7 +848,7 @@ public class main extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BT_Pub_Inserir, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -834,8 +856,8 @@ public class main extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jButton54)
                         .addGap(49, 49, 49)))
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(223, 223, 223))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -906,7 +928,7 @@ public class main extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(jTable2);
         if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(40);
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(80);
             jTable2.getColumnModel().getColumn(1).setPreferredWidth(600);
             jTable2.getColumnModel().getColumn(2).setPreferredWidth(200);
         }
@@ -941,7 +963,7 @@ public class main extends javax.swing.JFrame {
                                 .addComponent(jTextField3))
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(27, 27, 27))
                     .addGroup(jPanel7Layout.createSequentialGroup()
@@ -952,7 +974,7 @@ public class main extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jButton39)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -987,13 +1009,14 @@ public class main extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Codigo", "Nome", "Endereço", "Sigla"
+                "Codigo", "Sigla", "Nome", "Endereço"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(500);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(400);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(600);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(400);
         }
 
         jLabel1.setText("Endereço:");
@@ -1058,8 +1081,8 @@ public class main extends javax.swing.JFrame {
                         .addComponent(jButton40, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton41)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -1108,9 +1131,9 @@ public class main extends javax.swing.JFrame {
         jScrollPane4.setViewportView(jTable4);
         if (jTable4.getColumnModel().getColumnCount() > 0) {
             jTable4.getColumnModel().getColumn(0).setPreferredWidth(40);
-            jTable4.getColumnModel().getColumn(1).setPreferredWidth(30);
-            jTable4.getColumnModel().getColumn(2).setPreferredWidth(30);
-            jTable4.getColumnModel().getColumn(3).setPreferredWidth(200);
+            jTable4.getColumnModel().getColumn(1).setPreferredWidth(80);
+            jTable4.getColumnModel().getColumn(2).setPreferredWidth(60);
+            jTable4.getColumnModel().getColumn(3).setPreferredWidth(180);
             jTable4.getColumnModel().getColumn(4).setPreferredWidth(200);
             jTable4.getColumnModel().getColumn(5).setPreferredWidth(200);
         }
@@ -1181,8 +1204,8 @@ public class main extends javax.swing.JFrame {
                         .addComponent(jButton34, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton35)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)))
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1234,9 +1257,9 @@ public class main extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(jTable3);
         if (jTable3.getColumnModel().getColumnCount() > 0) {
-            jTable3.getColumnModel().getColumn(0).setPreferredWidth(30);
+            jTable3.getColumnModel().getColumn(0).setPreferredWidth(80);
             jTable3.getColumnModel().getColumn(1).setPreferredWidth(800);
-            jTable3.getColumnModel().getColumn(2).setPreferredWidth(70);
+            jTable3.getColumnModel().getColumn(2).setPreferredWidth(200);
         }
 
         jLabel5.setText("Salário:");
@@ -1278,8 +1301,8 @@ public class main extends javax.swing.JFrame {
                         .addComponent(jButton36, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jButton37)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1010, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 819, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -1310,12 +1333,12 @@ public class main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1216, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1323,21 +1346,51 @@ public class main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BT_Centro_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_CadastrarActionPerformed
-        new DAOUser().CadastrarCentro(new Centro(
-                TF_Centro_Nome.getText(), 
-                TF_Centro_Sigla.getText()
-        ));
         
-        int id = new DAOUser().BuscarCentro(TF_Centro_Sigla.getText());
+        String nome = TF_Centro_Nome.getText();
+        String sigla = TF_Centro_Sigla.getText();
         
-        System.out.println(id);
+        try{
+            if(nome.isEmpty()){
+                throw new NomeCentroVazio();
+            }
+            else if (sigla.isEmpty()){
+                throw new SiglaCentroVazio();
+            }
+            else if (sigla.length()>10){
+                throw new SiglaCentroGrande();
+            }
+            else if (nome.length()>50){
+                throw new NomeCentroGrande();
+            }
+            
+            
+            new DAOUser().CadastrarCentro(new Centro(nome, sigla));
+       
         
-        Centro temp = new Centro();
-        temp = new DAOUser().BuscarCentro(id); 
+            int id = new DAOUser().ReturnLastCod("Centro");
         
-        DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
-        Object[] data = {temp.getCod_Centro(), temp.getNome(), temp.getSigla()};
-        Table_Centro.addRow(data);
+            Centro temp = new Centro();
+            temp = new DAOUser().BuscarCentro(id); 
+        
+            DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
+            Object[] data = {temp.getCod_Centro(),  temp.getSigla(), temp.getNome()};
+            Table_Centro.addRow(data);
+        }
+        catch(SiglaCentroGrande e){
+            Warning_Centro.setText("Sigla pode ter no máximo 10 caráç");
+        }
+        catch(NomeCentroGrande e){
+            Warning_Centro.setText("Nome pode ter no máximo 50 caractéres");
+        }
+        catch(NomeCentroVazio e){
+            Warning_Centro.setText("Nome nao informado");
+        }
+        catch(SiglaCentroVazio e){
+            Warning_Centro.setText("Sigla nao informada");
+        }
+        
+            
               
     }//GEN-LAST:event_BT_Centro_CadastrarActionPerformed
 
@@ -1490,6 +1543,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTextField TF_Pub_Genero;
     private javax.swing.JTextField TF_Pub_Nome;
     private javax.swing.JTextField TF_Pub_Tipo;
+    private javax.swing.JLabel Warning_Centro;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton33;
