@@ -6,12 +6,13 @@ package biblioteca;
 
 import DAOUser.DAO_Centro;
 import Entitys.Centro;
-import Exceptions.NomeCentroGrande;
-import Exceptions.NomeCentroVazio;
-import Exceptions.SiglaCentroGrande;
-import Exceptions.SiglaCentroVazio;
+import Exceptions.CentroNomeGrande;
+import Exceptions.CentroSiglaGrande;
 import DAOUser.DAO_General;
-import Exceptions.SiglaUsada;
+import Exceptions.CentroCamposNaoInformados;
+import Exceptions.CentroEdicaoIgual;
+import Exceptions.CentroLinhaNaoSelecionada;
+import Exceptions.CentroSiglaUsada;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.sql.*;
@@ -362,8 +363,8 @@ public class main extends javax.swing.JFrame {
         TF_Centro_Nome = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jButton33 = new javax.swing.JButton();
-        Warning_Centro = new javax.swing.JLabel();
+        BT_Centro_Editar = new javax.swing.JButton();
+        BT_Centro_Buscar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         TB_Aluno = new javax.swing.JTable();
@@ -478,47 +479,11 @@ public class main extends javax.swing.JFrame {
             TB_Centro.getColumnModel().getColumn(1).setPreferredWidth(30);
             TB_Centro.getColumnModel().getColumn(2).setPreferredWidth(600);
         }
+
         BT_Centro_Cadastrar.setText("Cadastrar");
-        BT_Centro_Cadastrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                // Pega os valores dos campos de texto associados aos jLabel12 e jLabel13
-                String nome = TF_Centro_Nome.getText();  // Assumindo que o TF_Centro_Nome é o campo para o Nome
-                String sigla = TF_Centro_Sigla.getText(); // Assumindo que o TF_Centro_Sigla é o campo para a Sigla
-
-                // Verifica se os campos estão vazios
-                if (nome.isEmpty() || sigla.isEmpty()) {
-                    // Se algum campo estiver vazio, não faz nada e pode mostrar um aviso
-                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
-                                                  "Erro", JOptionPane.ERROR_MESSAGE);
-                    return; // Não faz o cadastro
-                }
-
-                // Cria o objeto Centro com os dados dos campos
-                Centro centro = new Centro(nome, sigla);
-
-                // Cria uma instância de DAO_Centro
-                DAO_Centro daoCentro = new DAO_Centro();
-
-                // Chama a função CadastrarCentro para inserir no banco de dados
-                daoCentro.CadastrarCentro(centro);
-
-                // Após o cadastro, recuperar o código gerado automaticamente pelo banco
-                int codCentro = daoCentro.getUltimoCodigoInserido();  // Recupera o código gerado automaticamente
-                centro.setCod_Centro(codCentro);  // Atribui ao objeto Centro
-
-                // Atualiza a tabela com o novo centro cadastrado
-                DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
-                Object[] row = {centro.getCod_Centro(), centro.getSigla(), centro.getNome()};
-                model.addRow(row);
-
-                // Limpa os campos após o cadastro
-                TF_Centro_Nome.setText("");  // Limpa o campo de Nome
-                TF_Centro_Sigla.setText(""); // Limpa o campo de Sigla
-
-                // Opcional: Caso queira mostrar que o cadastro foi feito com sucesso
-                JOptionPane.showMessageDialog(null, "Centro cadastrado com sucesso!", 
-                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        BT_Centro_Cadastrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BT_Centro_CadastrarActionPerformed(evt);
             }
         });
 
@@ -533,37 +498,47 @@ public class main extends javax.swing.JFrame {
 
         jLabel13.setText("Nome:");
 
-        jButton33.setText("Atualizar");
+        BT_Centro_Editar.setText("Editar");
+        BT_Centro_Editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BT_Centro_EditarActionPerformed(evt);
+            }
+        });
 
-        Warning_Centro.setForeground(new java.awt.Color(255, 0, 51));
+        BT_Centro_Buscar.setText("Buscar");
+        BT_Centro_Buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BT_Centro_BuscarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel13)
                             .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(TF_Centro_Sigla)
-                            .addComponent(TF_Centro_Nome)))
+                            .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(TF_Centro_Nome))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
+                        .addGap(17, 17, 17)
+                        .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Warning_Centro, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(BT_Centro_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(BT_Centro_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton33, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(BT_Centro_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BT_Centro_Remover)))
-                        .addGap(0, 12, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -582,16 +557,14 @@ public class main extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(Warning_Centro, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton33)
+                    .addComponent(BT_Centro_Editar)
                     .addComponent(BT_Centro_Remover)
                     .addComponent(BT_Centro_Cadastrar))
-                .addGap(19, 19, 19))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BT_Centro_Buscar)
+                .addGap(2, 2, 2))
         );
-
-        Warning_Centro.getAccessibleContext().setAccessibleName("Warning_Centro");
 
         jTabbedPane1.addTab("Centro", jPanel2);
 
@@ -1357,25 +1330,22 @@ public class main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BT_Centro_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_CadastrarActionPerformed
-        
-        String nome = TF_Centro_Nome.getText();
-        String sigla = TF_Centro_Sigla.getText();
-        
+
+        String nome = TF_Centro_Nome.getText();  // Assumindo que o TF_Centro_Nome é o campo para o Nome
+        String sigla = TF_Centro_Sigla.getText(); // Assumindo que o TF_Centro_Sigla é o campo para a Sigla
+    
         try{
-            if(nome.isEmpty()){
-                throw new NomeCentroVazio();
-            }
-            else if (sigla.isEmpty()){
-                throw new SiglaCentroVazio();
+            if(nome.isEmpty() || sigla.isEmpty()){
+                throw new CentroCamposNaoInformados();
             }
             else if (sigla.length()>10){
-                throw new SiglaCentroGrande();
+                throw new CentroSiglaGrande();
             }
             else if (nome.length()>50){
-                throw new NomeCentroGrande();
+                throw new CentroNomeGrande();
             }
             else if(DAO_Centro.TestaSigla(TF_Centro_Sigla.getText()) == true){
-                throw new SiglaUsada();
+                throw new CentroSiglaUsada();
             }
             
             
@@ -1393,21 +1363,25 @@ public class main extends javax.swing.JFrame {
             
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Centro cadastrado com sucessooooooo!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
-        catch(SiglaCentroGrande e){
-            Warning_Centro.setText("Sigla pode ter no máximo 10 caracteres");
+        catch(CentroSiglaGrande e){
+            JOptionPane.showMessageDialog(null, "A sigla pode ter no máximo 10 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(NomeCentroGrande e){
-            Warning_Centro.setText("Nome pode ter no máximo 50 caractéres");
+        catch(CentroNomeGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(NomeCentroVazio e){
-            Warning_Centro.setText("Nome nao informado");
+        catch(CentroCamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(SiglaCentroVazio e){
-            Warning_Centro.setText("Sigla nao informada");
-        }
-        catch(SiglaUsada e){
-            Warning_Centro.setText("Sigla ja esta sendo usada");
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A sigla informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
         }
         
             
@@ -1521,18 +1495,101 @@ public class main extends javax.swing.JFrame {
             
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
+            JOptionPane.showMessageDialog(null, "Centro removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }    
         else
-            Warning_Centro.setText("Nenhuma linha selecionada");
-            //
-            //Object[] data = {temp.getCod_Centro(),  temp.getSigla(), temp.getNome()};
-            //Table_Centro.addRow(data);
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_BT_Centro_RemoverActionPerformed
 
     private void TB_CentroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_CentroMouseClicked
         TF_Centro_Nome.setText((String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(), 2));
         TF_Centro_Sigla.setText((String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(), 1));
     }//GEN-LAST:event_TB_CentroMouseClicked
+
+    private void BT_Centro_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_BuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_BT_Centro_BuscarActionPerformed
+
+    private void BT_Centro_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_EditarActionPerformed
+
+        
+        try{
+            //System.out.println(TB_Centro.getSelectedRow());
+            if(TB_Centro.getSelectedRow()==-1){
+                throw new CentroLinhaNaoSelecionada();
+            }
+            else{
+                String nomeNew = TF_Centro_Nome.getText();
+                String siglaNew = TF_Centro_Sigla.getText();
+                String nomeOld = (String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(),2);
+                String siglaOld = (String) TB_Centro.getValueAt(TB_Centro.getSelectedRow(),1);
+                int codigo = (int) TB_Centro.getValueAt(TB_Centro.getSelectedRow(),0);
+                
+                //Testa se tem alguma informação nos campos
+                if(nomeNew.isEmpty() && siglaNew.isEmpty()){
+                    System.out.println("oi");
+                    throw new CentroCamposNaoInformados();
+                }
+            
+
+            
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                if(nomeNew.equals(nomeOld) && siglaNew.equals(siglaOld)){
+                    throw new CentroEdicaoIgual();       
+                }
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(!nomeNew.equals(nomeOld)){
+                        new DAO_Centro().EditarNome(codigo, nomeNew); 
+                        TB_Centro.setValueAt(nomeNew, TB_Centro.getSelectedRow(), 2);
+                    }
+                
+                    //testa se a sigla fornecida é diferente da já cadastrada
+                    if(!siglaNew.equals(siglaOld)){
+
+                        //testa se a sigla fornecida e diferente de alguma ja cadastrada
+                        if(DAO_Centro.TestaSigla(siglaNew)==false){
+                            new DAO_Centro().EditarSigla(codigo, siglaNew); 
+                            TB_Centro.setValueAt(siglaNew, TB_Centro.getSelectedRow(), 1);
+                        }
+                        else{
+                        throw new CentroSiglaUsada();
+                        }
+                    }
+                
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Centro_Nome.setText("");
+                    TF_Centro_Sigla.setText("");
+
+                }
+            
+            }
+        }
+        catch(CentroCamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A sigla informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroLinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+        
+    }//GEN-LAST:event_BT_Centro_EditarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1570,7 +1627,9 @@ public class main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BT_Centro_Buscar;
     private javax.swing.JButton BT_Centro_Cadastrar;
+    private javax.swing.JButton BT_Centro_Editar;
     private javax.swing.JButton BT_Centro_Inserir1;
     private javax.swing.JButton BT_Centro_Inserir2;
     private javax.swing.JButton BT_Centro_Inserir3;
@@ -1582,7 +1641,13 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JRadioButton CheckBox_Autoajuda;
     private javax.swing.JRadioButton CheckBox_Literatura;
     private javax.swing.JRadioButton CheckBox_Outro;
+    private javax.swing.JTable TB_Aluno;
+    private javax.swing.JTable TB_Autor;
+    private javax.swing.JTable TB_Biblioteca;
     private javax.swing.JTable TB_Centro;
+    private javax.swing.JTable TB_Emprestimo;
+    private javax.swing.JTable TB_Funcionario;
+    private javax.swing.JTable TB_Publicacao;
     private javax.swing.JTextField TF_Centro_Nome;
     private javax.swing.JTextField TF_Centro_Sigla;
     private javax.swing.JTextField TF_Pub_Ano;
@@ -1592,9 +1657,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTextField TF_Pub_Genero;
     private javax.swing.JTextField TF_Pub_Nome;
     private javax.swing.JTextField TF_Pub_Tipo;
-    private javax.swing.JLabel Warning_Centro;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton33;
     private javax.swing.JButton jButton34;
     private javax.swing.JButton jButton35;
     private javax.swing.JButton jButton36;
@@ -1655,12 +1718,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable TB_Biblioteca;
-    private javax.swing.JTable TB_Autor;
-    private javax.swing.JTable TB_Funcionario;
-    private javax.swing.JTable TB_Emprestimo;
-    private javax.swing.JTable TB_Publicacao;
-    private javax.swing.JTable TB_Aluno;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;
