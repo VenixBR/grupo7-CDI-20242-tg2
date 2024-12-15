@@ -1,14 +1,16 @@
 package Entitys;
 
+import java.sql.Date;
+
 public class Publicacao {
 
     private int Cod_Publicacao;
     private String Tipo;
-    private int Ano;
+    private Date Ano;
     private String Nome;
     private int fk_Cod_Biblioteca;
 
-    public int getAno() {
+    public Date getAno() {
         return Ano;
     }
 
@@ -28,8 +30,8 @@ public class Publicacao {
         return Tipo;
     }
 
-    public void setAno(int ano) {
-        Ano = ano;
+    public void setAno(Date ano) { 
+        this.Ano = ano;
     }
 
     public void setCod_Publicacao(int cod_Publicacao) {

@@ -15,9 +15,9 @@ import Exceptions.SiglaUsada;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.sql.*;
-import java.sql.SQLException;
-
-
+import java.text.SimpleDateFormat;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 /**
  *
  * @author desenvolvimento
@@ -37,30 +37,23 @@ public class main extends javax.swing.JFrame {
 
 	// Método para preencher a tabela com os centros
 	private void carregarCentros() {
-	    // Certifica-se de que a conexão foi estabelecida antes de usá-la
 	    try {
-	        // Conectar ao banco de dados, caso a conexão ainda não tenha sido feita
 	        if (conn == null || conn.isClosed()) {
 	            conectar();
 	        }
 
-	        // Query SQL para buscar os dados
 	        String query = "SELECT * FROM Centro"; 
 	        Statement stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 
-	        // Atualiza a tabela com os dados recuperados
 	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
 	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
 
-	        // Preenche a tabela com os resultados da consulta
 	        while (rs.next()) {
-	            // Adiciona os dados à tabela
 	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
 	            model.addRow(row);
 	        }
 
-	        // Fecha os recursos (Statement e ResultSet)
 	        rs.close();
 	        stmt.close();
 
@@ -69,20 +62,17 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
 
-	// Método para fechar a conexão
 	public void fecharConexao() throws SQLException {
 	    if (conn != null && !conn.isClosed()) {
-	        conn.close(); // Fecha a conexão ao banco de dados
+	        conn.close(); // 
 	    }
 	}
 
 	// Método para preencher a tabela com os alunos
 	private void carregarAlunos() {
-	    // Certifica-se de que a conexão foi estabelecida antes de usá-la
 	    try {
-	        // Verifica e garante que a conexão com o banco de dados esteja aberta
 	        if (conn == null || conn.isClosed()) {
-	            conectar(); // Estabelece a conexão se ainda não foi feita
+	            conectar(); 
 	        }
 
 	        // Query SQL para buscar os dados dos alunos
@@ -90,34 +80,28 @@ public class main extends javax.swing.JFrame {
 	        Statement stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 
-	        // Atualiza a tabela com os dados recuperados
-	        DefaultTableModel model = (DefaultTableModel) jTable6.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Aluno.getModel();
+	        model.setRowCount(0); 
 
-	        // Preenche a tabela com os resultados da consulta
 	        while (rs.next()) {
-	            // Adiciona os dados de cada aluno à tabela
 	            Object[] row = {
-	                rs.getInt("Matricula"),  // Matricula do aluno
-	                rs.getString("Nome"),     // Nome do aluno
-	                rs.getInt("fk_Cod_Centro"), // Código do centro associado ao aluno
-	                rs.getString("Endereco") // Endereço do aluno
+	                rs.getInt("Matricula"),
+	                rs.getString("Nome"),
+	                rs.getInt("fk_Cod_Centro"),
+	                rs.getString("Endereco")
 	            };
-	            model.addRow(row); // Adiciona a linha na tabela
+	            model.addRow(row);
 	        }
 
-	        // Fecha os recursos (Statement e ResultSet)
 	        rs.close();
 	        stmt.close();
 
 	    } catch (SQLException ex) {
-	        // Exibe a mensagem de erro caso ocorra
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados dos alunos: " + ex.getMessage());
 	    }
 	}
 	
 	private void carregarPublicacoes() {
-	    // A consulta SQL agora faz joins com as tabelas relacionadas
 	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Sigla AS Biblioteca, " +
 	                   "a.Edicao, a.Area, " +
 	                   "l.Genero_Textual, " +
@@ -130,38 +114,35 @@ public class main extends javax.swing.JFrame {
 	                   "LEFT JOIN Autoajuda au ON p.Cod_Publicacao = au.fk_Cod_Publicacao " +
 	                   "LEFT JOIN Escrito e ON p.Cod_Publicacao = e.fk_Cod_Publicacao";
 
-	    // Declaração dos objetos fora do bloco try
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
 
 	    try {
-	        conn = SQL_connection.getConnection();  // Obtém a conexão do banco de dados
-	        stmt = conn.createStatement();  // Cria o Statement
-	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+	        conn = SQL_connection.getConnection();  
+	        stmt = conn.createStatement(); 
+	        rs = stmt.executeQuery(query);  
 
-	        DefaultTableModel model = (DefaultTableModel) jTable5.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Publicacao.getModel();
+	        model.setRowCount(0);  
 
-	        // Preenchendo a tabela com os resultados
 	        while (rs.next()) {
 	            Object[] row = {
-	                rs.getInt("Cod_Publicacao"),  // Código da publicação
-	                rs.getString("Nome"),  // Nome da publicação
-	                rs.getInt("Ano"),  // Ano da publicação
-	                rs.getString("Biblioteca"),  // Nome da biblioteca
-	                rs.getString("Tipo"),  // Tipo de publicação
-	                rs.getInt("Edicao"),  // Edição (de Academico)
-	                rs.getString("Area"),  // Área (de Academico)
-	                rs.getString("Genero_Textual"),  // Gênero textual (de Literatura)
-	                rs.getString("Assunto"),  // Assunto (de Autoajuda)
+	                rs.getInt("Cod_Publicacao"),  // Esta é uma coluna do tipo INT
+	                rs.getString("Nome"),         // Esta é uma coluna do tipo String
+	                rs.getDate("Ano"),            // Se "Ano" for uma coluna DATE, use rs.getDate() ao invés de rs.getInt()
+	                rs.getString("Biblioteca"),   // Esta é uma coluna do tipo String
+	                rs.getString("Tipo"),         // Esta é uma coluna do tipo String
+	                rs.getInt("Edicao"),          // Esta é uma coluna do tipo INT
+	                rs.getString("Area"),         // Esta é uma coluna do tipo String
+	                rs.getString("Genero_Textual"),  // Esta é uma coluna do tipo String
+	                rs.getString("Assunto"),      // Esta é uma coluna do tipo String
 	            };
-	            model.addRow(row);  // Adiciona os dados à tabela
+	            model.addRow(row);  // Adiciona a linha à tabela
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    } finally {
-	        // Fechando o ResultSet e o Statement, mas NÃO fechando a conexão
 	        try {
 	            if (rs != null) {
 	                rs.close();
@@ -170,41 +151,37 @@ public class main extends javax.swing.JFrame {
 	                stmt.close();
 	            }
 	        } catch (SQLException ex) {
-	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	            ex.printStackTrace();
 	        }
 	    }
 	}
 
 	private void carregarAutores() {
-	    // Consulta SQL para buscar os autores diretamente da tabela
 	    String query = "SELECT Cod_Autor, Nome, Pais FROM Autor";
 
-	    // Declaração dos objetos fora do bloco try
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
 
 	    try {
-	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
-	        stmt = conn.createStatement();  // Cria o Statement
-	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+	        conn = SQL_connection.getConnection(); 
+	        stmt = conn.createStatement(); 
+	        rs = stmt.executeQuery(query); 
 
-	        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Autor.getModel();
+	        model.setRowCount(0);  
 
-	        // Preenche a tabela com os dados dos autores
 	        while (rs.next()) {
 	            Object[] row = {
-	                rs.getInt("Cod_Autor"),  // Código do autor
-	                rs.getString("Nome"),     // Nome do autor
-	                rs.getString("Pais")      // País do autor
+	                rs.getInt("Cod_Autor"),
+	                rs.getString("Nome"),
+	                rs.getString("Pais")
 	            };
-	            model.addRow(row);  // Adiciona a linha à tabela
+	            model.addRow(row);
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    } finally {
-	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
 	        try {
 	            if (rs != null) {
 	                rs.close();
@@ -213,42 +190,38 @@ public class main extends javax.swing.JFrame {
 	                stmt.close();
 	            }
 	        } catch (SQLException ex) {
-	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	            ex.printStackTrace(); 
 	        }
 	    }
 	}
 
 	private void carregarBibliotecas() {
-	    // Consulta SQL para buscar os dados das bibliotecas
 	    String query = "SELECT Cod_Biblioteca, Nome, Endereco, Sigla FROM Biblioteca";
 
-	    // Declaração dos objetos fora do bloco try
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
 
 	    try {
-	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
-	        stmt = conn.createStatement();  // Cria o Statement
-	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+	        conn = SQL_connection.getConnection();
+	        stmt = conn.createStatement();
+	        rs = stmt.executeQuery(query);
 
-	        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Biblioteca.getModel();
+	        model.setRowCount(0);
 
-	        // Preenche a tabela com os dados das bibliotecas
 	        while (rs.next()) {
 	            Object[] row = {
-	                rs.getInt("Cod_Biblioteca"),  // Código da biblioteca
-                        rs.getString("Sigla"),         // Sigla da biblioteca
-	                rs.getString("Nome"),         // Nome da biblioteca
-	                rs.getString("Endereco")     // Endereço da biblioteca
+	                rs.getInt("Cod_Biblioteca"),
+                        rs.getString("Sigla"),
+	                rs.getString("Nome"),
+	                rs.getString("Endereco")
 	            };
-	            model.addRow(row);  // Adiciona a linha à tabela
+	            model.addRow(row);
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    } finally {
-	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
 	        try {
 	            if (rs != null) {
 	                rs.close();
@@ -257,41 +230,37 @@ public class main extends javax.swing.JFrame {
 	                stmt.close();
 	            }
 	        } catch (SQLException ex) {
-	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	            ex.printStackTrace();
 	        }
 	    }
 	}
 	
 	private void carregarFuncionarios() {
-	    // Consulta SQL para buscar os dados dos funcionários
 	    String query = "SELECT Cod_Funcionario, Nome, Salario FROM Funcionario";
 
-	    // Declaração dos objetos fora do bloco try
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
 
 	    try {
-	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
-	        stmt = conn.createStatement();  // Cria o Statement
-	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+	        conn = SQL_connection.getConnection();
+	        stmt = conn.createStatement();
+	        rs = stmt.executeQuery(query);
 
-	        DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Funcionario.getModel();
+	        model.setRowCount(0);
 
-	        // Preenche a tabela com os dados dos funcionários
 	        while (rs.next()) {
 	            Object[] row = {
-	                rs.getInt("Cod_Funcionario"),  // Código do funcionário
-	                rs.getString("Nome"),           // Nome do funcionário
-	                rs.getBigDecimal("Salario")     // Salário do funcionário
+	                rs.getInt("Cod_Funcionario"),
+	                rs.getString("Nome"),
+	                rs.getBigDecimal("Salario")
 	            };
-	            model.addRow(row);  // Adiciona a linha à tabela
+	            model.addRow(row);
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    } finally {
-	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
 	        try {
 	            if (rs != null) {
 	                rs.close();
@@ -300,7 +269,7 @@ public class main extends javax.swing.JFrame {
 	                stmt.close();
 	            }
 	        } catch (SQLException ex) {
-	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	            ex.printStackTrace();
 	        }
 	    }
 	}
@@ -314,35 +283,32 @@ public class main extends javax.swing.JFrame {
 	                   "JOIN Aluno a ON e.fk_Matricula = a.Matricula " +
 	                   "JOIN Funcionario f ON e.fk_Cod_Funcionario = f.Cod_Funcionario";
 
-	    // Declaração dos objetos fora do bloco try
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
 
 	    try {
-	        conn = SQL_connection.getConnection();  // Obtém a conexão com o banco de dados
-	        stmt = conn.createStatement();  // Cria o Statement
-	        rs = stmt.executeQuery(query);  // Executa a consulta SQL
+	        conn = SQL_connection.getConnection();
+	        stmt = conn.createStatement();
+	        rs = stmt.executeQuery(query);
 
-	        DefaultTableModel model = (DefaultTableModel) jTable4.getModel();
-	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+	        DefaultTableModel model = (DefaultTableModel) TB_Emprestimo.getModel();
+	        model.setRowCount(0);
 
-	        // Preenche a tabela com os dados dos empréstimos
 	        while (rs.next()) {
 	            Object[] row = {
-	                rs.getInt("Cod_Emprestimo"),    // Código do empréstimo
-	                rs.getDate("Data_"),            // Data do empréstimo
-	                rs.getTime("Hora"),             // Hora do empréstimo
-	                rs.getString("Funcionario"),    // Nome do funcionário que registrou o empréstimo
-	                rs.getString("Publicacao"),     // Nome da publicação emprestada
-	                rs.getString("Aluno")          // Nome do aluno que fez o empréstimo
+	                rs.getInt("Cod_Emprestimo"),
+	                rs.getDate("Data_"),
+	                rs.getTime("Hora"),
+	                rs.getString("Funcionario"),
+	                rs.getString("Publicacao"),
+	                rs.getString("Aluno")
 	            };
-	            model.addRow(row);  // Adiciona a linha à tabela
+	            model.addRow(row);
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    } finally {
-	        // Fechamento do ResultSet e do Statement, mas NÃO fechando a conexão
 	        try {
 	            if (rs != null) {
 	                rs.close();
@@ -351,7 +317,7 @@ public class main extends javax.swing.JFrame {
 	                stmt.close();
 	            }
 	        } catch (SQLException ex) {
-	            ex.printStackTrace();  // Caso falhe ao fechar os recursos
+	            ex.printStackTrace();
 	        }
 	    }
 	}
@@ -367,9 +333,9 @@ public class main extends javax.swing.JFrame {
         TF_Pub_Genero.setEnabled(false);
         TF_Pub_Assunto.setEnabled(false);
         TF_Pub_Tipo.setEnabled(false);
-        carregarCentros(); // Chama o método para carregar os centros automaticamente
+        carregarCentros(); 
         carregarAlunos();
-        carregarPublicacoes();  // Chama a função para carregar os dados de publicações
+        carregarPublicacoes(); 
         carregarAutores();
         carregarBibliotecas();
         carregarFuncionarios();
@@ -400,7 +366,7 @@ public class main extends javax.swing.JFrame {
         Warning_Centro = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jTable6 = new javax.swing.JTable();
+        TB_Aluno = new javax.swing.JTable();
         jTextField13 = new javax.swing.JTextField();
         jTextField14 = new javax.swing.JTextField();
         jLabel19 = new javax.swing.JLabel();
@@ -414,7 +380,7 @@ public class main extends javax.swing.JFrame {
         jButton48 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable5 = new javax.swing.JTable();
+        TB_Publicacao = new javax.swing.JTable();
         jComboBox6 = new javax.swing.JComboBox<>();
         jLabel15 = new javax.swing.JLabel();
         TF_Pub_Ano = new javax.swing.JTextField();
@@ -440,7 +406,7 @@ public class main extends javax.swing.JFrame {
         TF_Pub_Assunto = new javax.swing.JTextField();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TB_Autor = new javax.swing.JTable();
         jTextField3 = new javax.swing.JTextField();
         jTextField4 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -450,7 +416,7 @@ public class main extends javax.swing.JFrame {
         jButton39 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TB_Biblioteca = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -464,7 +430,7 @@ public class main extends javax.swing.JFrame {
         jButton41 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        TB_Emprestimo = new javax.swing.JTable();
         jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
@@ -480,7 +446,7 @@ public class main extends javax.swing.JFrame {
         jButton35 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        TB_Funcionario = new javax.swing.JTable();
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -512,11 +478,47 @@ public class main extends javax.swing.JFrame {
             TB_Centro.getColumnModel().getColumn(1).setPreferredWidth(30);
             TB_Centro.getColumnModel().getColumn(2).setPreferredWidth(600);
         }
-
         BT_Centro_Cadastrar.setText("Cadastrar");
-        BT_Centro_Cadastrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BT_Centro_CadastrarActionPerformed(evt);
+        BT_Centro_Cadastrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                // Pega os valores dos campos de texto associados aos jLabel12 e jLabel13
+                String nome = TF_Centro_Nome.getText();  // Assumindo que o TF_Centro_Nome é o campo para o Nome
+                String sigla = TF_Centro_Sigla.getText(); // Assumindo que o TF_Centro_Sigla é o campo para a Sigla
+
+                // Verifica se os campos estão vazios
+                if (nome.isEmpty() || sigla.isEmpty()) {
+                    // Se algum campo estiver vazio, não faz nada e pode mostrar um aviso
+                    JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+                    return; // Não faz o cadastro
+                }
+
+                // Cria o objeto Centro com os dados dos campos
+                Centro centro = new Centro(nome, sigla);
+
+                // Cria uma instância de DAO_Centro
+                DAO_Centro daoCentro = new DAO_Centro();
+
+                // Chama a função CadastrarCentro para inserir no banco de dados
+                daoCentro.CadastrarCentro(centro);
+
+                // Após o cadastro, recuperar o código gerado automaticamente pelo banco
+                int codCentro = daoCentro.getUltimoCodigoInserido();  // Recupera o código gerado automaticamente
+                centro.setCod_Centro(codCentro);  // Atribui ao objeto Centro
+
+                // Atualiza a tabela com o novo centro cadastrado
+                DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+                Object[] row = {centro.getCod_Centro(), centro.getSigla(), centro.getNome()};
+                model.addRow(row);
+
+                // Limpa os campos após o cadastro
+                TF_Centro_Nome.setText("");  // Limpa o campo de Nome
+                TF_Centro_Sigla.setText(""); // Limpa o campo de Sigla
+
+                // Opcional: Caso queira mostrar que o cadastro foi feito com sucesso
+                JOptionPane.showMessageDialog(null, "Centro cadastrado com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
         });
 
@@ -593,7 +595,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Centro", jPanel2);
 
-        jTable6.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Aluno.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -604,12 +606,12 @@ public class main extends javax.swing.JFrame {
                 "Matricula", "Nome", "Centro", "Endereço"
             }
         ));
-        jScrollPane6.setViewportView(jTable6);
-        if (jTable6.getColumnModel().getColumnCount() > 0) {
-            jTable6.getColumnModel().getColumn(0).setPreferredWidth(100);
-            jTable6.getColumnModel().getColumn(1).setPreferredWidth(300);
-            jTable6.getColumnModel().getColumn(2).setPreferredWidth(40);
-            jTable6.getColumnModel().getColumn(3).setPreferredWidth(300);
+        jScrollPane6.setViewportView(TB_Aluno);
+        if (TB_Aluno.getColumnModel().getColumnCount() > 0) {
+            TB_Aluno.getColumnModel().getColumn(0).setPreferredWidth(100);
+            TB_Aluno.getColumnModel().getColumn(1).setPreferredWidth(300);
+            TB_Aluno.getColumnModel().getColumn(2).setPreferredWidth(40);
+            TB_Aluno.getColumnModel().getColumn(3).setPreferredWidth(300);
         }
 
         jTextField13.addActionListener(new java.awt.event.ActionListener() {
@@ -702,7 +704,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Aluno", jPanel3);
 
-        jTable5.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Publicacao.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -713,13 +715,13 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "Ano", "Biblioteca", "Tipo"
             }
         ));
-        jScrollPane5.setViewportView(jTable5);
-        if (jTable5.getColumnModel().getColumnCount() > 0) {
-            jTable5.getColumnModel().getColumn(0).setPreferredWidth(30);
-            jTable5.getColumnModel().getColumn(1).setPreferredWidth(400);
-            jTable5.getColumnModel().getColumn(2).setPreferredWidth(40);
-            jTable5.getColumnModel().getColumn(3).setPreferredWidth(40);
-            jTable5.getColumnModel().getColumn(4).setPreferredWidth(100);
+        jScrollPane5.setViewportView(TB_Publicacao);
+        if (TB_Publicacao.getColumnModel().getColumnCount() > 0) {
+            TB_Publicacao.getColumnModel().getColumn(0).setPreferredWidth(30);
+            TB_Publicacao.getColumnModel().getColumn(1).setPreferredWidth(400);
+            TB_Publicacao.getColumnModel().getColumn(2).setPreferredWidth(40);
+            TB_Publicacao.getColumnModel().getColumn(3).setPreferredWidth(40);
+            TB_Publicacao.getColumnModel().getColumn(4).setPreferredWidth(100);
         }
 
         jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -924,7 +926,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Publicação", jPanel4);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Autor.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -935,11 +937,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "País"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(80);
-            jTable2.getColumnModel().getColumn(1).setPreferredWidth(600);
-            jTable2.getColumnModel().getColumn(2).setPreferredWidth(200);
+        jScrollPane2.setViewportView(TB_Autor);
+        if (TB_Autor.getColumnModel().getColumnCount() > 0) {
+            TB_Autor.getColumnModel().getColumn(0).setPreferredWidth(80);
+            TB_Autor.getColumnModel().getColumn(1).setPreferredWidth(600);
+            TB_Autor.getColumnModel().getColumn(2).setPreferredWidth(200);
         }
 
         jLabel3.setText("País:");
@@ -1010,7 +1012,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Autor", jPanel7);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Biblioteca.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1021,11 +1023,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Sigla", "Nome", "Endereço"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(600);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(400);
+        jScrollPane1.setViewportView(TB_Biblioteca);
+        if (TB_Biblioteca.getColumnModel().getColumnCount() > 0) {
+            TB_Biblioteca.getColumnModel().getColumn(1).setPreferredWidth(100);
+            TB_Biblioteca.getColumnModel().getColumn(2).setPreferredWidth(600);
+            TB_Biblioteca.getColumnModel().getColumn(3).setPreferredWidth(400);
         }
 
         jLabel1.setText("Endereço:");
@@ -1126,7 +1128,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Biblioteca", jPanel1);
 
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Emprestimo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
@@ -1137,14 +1139,14 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Data", "Hora", "Funcionário", "Publicação", "Aluno"
             }
         ));
-        jScrollPane4.setViewportView(jTable4);
-        if (jTable4.getColumnModel().getColumnCount() > 0) {
-            jTable4.getColumnModel().getColumn(0).setPreferredWidth(40);
-            jTable4.getColumnModel().getColumn(1).setPreferredWidth(80);
-            jTable4.getColumnModel().getColumn(2).setPreferredWidth(60);
-            jTable4.getColumnModel().getColumn(3).setPreferredWidth(180);
-            jTable4.getColumnModel().getColumn(4).setPreferredWidth(200);
-            jTable4.getColumnModel().getColumn(5).setPreferredWidth(200);
+        jScrollPane4.setViewportView(TB_Emprestimo);
+        if (TB_Emprestimo.getColumnModel().getColumnCount() > 0) {
+            TB_Emprestimo.getColumnModel().getColumn(0).setPreferredWidth(40);
+            TB_Emprestimo.getColumnModel().getColumn(1).setPreferredWidth(80);
+            TB_Emprestimo.getColumnModel().getColumn(2).setPreferredWidth(60);
+            TB_Emprestimo.getColumnModel().getColumn(3).setPreferredWidth(180);
+            TB_Emprestimo.getColumnModel().getColumn(4).setPreferredWidth(200);
+            TB_Emprestimo.getColumnModel().getColumn(5).setPreferredWidth(200);
         }
 
         jLabel7.setText("Data:");
@@ -1253,7 +1255,7 @@ public class main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Emprestimo", jPanel5);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Funcionario.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -1264,11 +1266,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "Salário"
             }
         ));
-        jScrollPane3.setViewportView(jTable3);
-        if (jTable3.getColumnModel().getColumnCount() > 0) {
-            jTable3.getColumnModel().getColumn(0).setPreferredWidth(80);
-            jTable3.getColumnModel().getColumn(1).setPreferredWidth(800);
-            jTable3.getColumnModel().getColumn(2).setPreferredWidth(200);
+        jScrollPane3.setViewportView(TB_Funcionario);
+        if (TB_Funcionario.getColumnModel().getColumnCount() > 0) {
+            TB_Funcionario.getColumnModel().getColumn(0).setPreferredWidth(80);
+            TB_Funcionario.getColumnModel().getColumn(1).setPreferredWidth(800);
+            TB_Funcionario.getColumnModel().getColumn(2).setPreferredWidth(200);
         }
 
         jLabel5.setText("Salário:");
@@ -1653,12 +1655,12 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
-    private javax.swing.JTable jTable5;
-    private javax.swing.JTable jTable6;
+    private javax.swing.JTable TB_Biblioteca;
+    private javax.swing.JTable TB_Autor;
+    private javax.swing.JTable TB_Funcionario;
+    private javax.swing.JTable TB_Emprestimo;
+    private javax.swing.JTable TB_Publicacao;
+    private javax.swing.JTable TB_Aluno;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField13;
     private javax.swing.JTextField jTextField14;

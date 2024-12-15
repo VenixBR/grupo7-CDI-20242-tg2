@@ -1,13 +1,12 @@
 package Entitys;
 
 import java.sql.Time;
-import java.util.Date;
 
 public class Emprestimo {
 
     private int Cod_Emprestimo;
-    private Date Data;
-    private Time Hora;
+    private java.sql.Date Data_;  // Certifique-se de que é java.sql.Date, não java.util.Date
+    private java.sql.Time Hora;
     private int fk_Cod_Publicacao;
     private int fk_Matricula;
     private int fk_Cod_Funcionario;
@@ -16,8 +15,8 @@ public class Emprestimo {
         return Cod_Emprestimo;
     }
 
-    public Date getData() {
-        return Data;
+    public java.sql.Date getData() {
+        return Data_;
     }
 
     public int getFk_Cod_Funcionario() {
@@ -40,8 +39,8 @@ public class Emprestimo {
         Cod_Emprestimo = cod_Emprestimo;
     }
 
-    public void setData(Date data) {
-        Data = data;
+    public void setData(java.sql.Date data) {
+        this.Data_ = data;
     }
 
     public void setFk_Cod_Funcionario(int fk_Cod_Funcionario) {

@@ -61,5 +61,30 @@ public class DAO_Biblioteca{
         return lib;
     }
     
+    public void RemoverBiblioteca(int Cod_Biblioteca) {
+
+        String SQL_command = "DELETE FROM Biblioteca WHERE Cod_Biblioteca=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            
+            ps.setInt(1, Cod_Biblioteca);
+            
+            // Executa a consulta para remover a biblioteca
+            ps.executeUpdate();  // Aqui usamos executeUpdate() porque estamos fazendo uma operação de DELETE
+
+        } catch (SQLException e) {
+            e.printStackTrace();  
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     
 }
