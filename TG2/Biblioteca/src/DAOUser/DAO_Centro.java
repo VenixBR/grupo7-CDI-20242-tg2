@@ -63,17 +63,15 @@ public class DAO_Centro{
 
         String SQL_command = "DELETE FROM Centro WHERE Cod_Centro=?";
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         try {
             ps = SQL_connection.getConnection().prepareStatement(SQL_command);
             ps.setInt(1, Cod_Centro);
-            rs = ps.executeQuery();
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close();
                 if (ps != null) ps.close();
             } catch (SQLException e) {
                 e.printStackTrace();
