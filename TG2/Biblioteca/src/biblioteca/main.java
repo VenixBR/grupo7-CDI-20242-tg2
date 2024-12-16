@@ -62,6 +62,102 @@ public class main extends javax.swing.JFrame {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    }
 	}
+        
+        
+        
+        // Método para preencher a tabela com os centros com o nome indicado
+	private void carregarCentrosNome(String nome) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Centro WHERE Nome=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+	        //Statement stmt = conn.createStatement();
+	        //ResultSet rs = stmt.executeQuery(query);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	        //stmt.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        // Método para preencher a tabela com os centros com o nome indicado
+	private void carregarCentrosSigla(String sigla) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Centro WHERE Sigla=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, sigla);
+	        //Statement stmt = conn.createStatement();
+	        //ResultSet rs = stmt.executeQuery(query);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	        //stmt.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        private void carregarCentrosNomeSigla(String nome, String sigla) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Centro WHERE Nome=? AND Sigla=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ps.setString(2, sigla);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	        //stmt.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        
+        
+        
+        
+        
 
 	public void fecharConexao() throws SQLException {
 	    if (conn != null && !conn.isClosed()) {
@@ -1612,7 +1708,39 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_TB_CentroMouseClicked
 
     private void BT_Centro_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_BuscarActionPerformed
-        // TODO add your handling code here:
+        
+        String nome = TF_Centro_Nome.getText();
+        String sigla = TF_Centro_Sigla.getText();
+        int caso = 0;
+        
+        
+
+            if(!nome.isEmpty() && sigla.isEmpty())
+                caso = 1;
+            else if(nome.isEmpty() && !sigla.isEmpty())
+                caso = 2;
+            else if(!nome.isEmpty() && !sigla.isEmpty())
+                caso = 3;
+        
+            switch(caso){
+                case 1:
+                    carregarCentrosNome(nome);
+                    break;
+                case 2:
+                    carregarCentrosSigla(sigla);
+                    break;
+                case 3:
+                    carregarCentrosNomeSigla(nome, sigla);
+                    break;
+                default:
+                    carregarCentros();           
+            }
+
+        
+            
+        
+        
+        
     }//GEN-LAST:event_BT_Centro_BuscarActionPerformed
 
     private void BT_Centro_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_EditarActionPerformed
