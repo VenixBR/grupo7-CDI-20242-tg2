@@ -6,6 +6,15 @@ public class Aluno {
     private String Endereco;
     private String Nome;
     private int fk_Cod_Centro;
+    
+    public Aluno(int matricula, String endereco, String nome, int cod_centro){
+        Matricula = matricula;
+        Endereco = endereco;
+        Nome = nome;
+        fk_Cod_Centro = cod_centro;
+    }
+    
+    public Aluno(){}
 
     public String getEndereco() {
         return Endereco;
