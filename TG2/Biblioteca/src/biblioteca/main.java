@@ -200,23 +200,25 @@ public class main extends javax.swing.JFrame {
 	}
         
         // Método para preencher a tabela com os centros com o nome indicado
-	private void carregarAlunosNome(String nome) {
+	
+        
+        private void carregarAlunosUm(Object parametro, String SQL) {
 	    try {
 	        if (conn == null || conn.isClosed()) {
 	            conectar();
 	        }
 
-	        String query = "SELECT * FROM Aluno WHERE Nome=?"; 
+	        String query = SQL; 
                 PreparedStatement ps = null;
                 ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, nome);
+                ps.setObject(1, parametro);
                 ResultSet rs = ps.executeQuery();
 
-	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        DefaultTableModel model = (DefaultTableModel) TB_Aluno.getModel();
 	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
 
 	        while (rs.next()) {
-	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
+	            Object[] row = { rs.getInt("Matricula"), rs.getString("Nome"), rs.getString("sigla"), rs.getString("Endereco") };
 	            model.addRow(row);
 	        }
 	        rs.close();
@@ -226,6 +228,91 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
         
+        private void carregarAlunosDois(Object parametro1, Object parametro2, String SQL) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = SQL; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setObject(1, parametro1);
+                ps.setObject(2, parametro2);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Aluno.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("Matricula"), rs.getString("Nome"), rs.getString("sigla"), rs.getString("Endereco") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        private void carregarAlunosTres(Object parametro1, Object parametro2 , Object parametro3, String SQL) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = SQL; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setObject(1, parametro1);
+                ps.setObject(2, parametro2);
+                ps.setObject(3, parametro3);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Aluno.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("Matricula"), rs.getString("Nome"), rs.getString("sigla"), rs.getString("Endereco") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+         private void carregarAlunosQuatro(Object parametro1, Object parametro2 , Object parametro3, Object parametro4, String SQL) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = SQL; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setObject(1, parametro1);
+                ps.setObject(2, parametro2);
+                ps.setObject(3, parametro3);
+                ps.setObject(4, parametro4);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Aluno.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("Matricula"), rs.getString("Nome"), rs.getString("sigla"), rs.getString("Endereco") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+
 	private void carregarPublicacoes() {
 	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Sigla AS Biblioteca, " +
 	                   "a.Edicao, a.Area, " +
@@ -577,6 +664,12 @@ public class main extends javax.swing.JFrame {
         BT_Funcionario_Cadastrar = new javax.swing.JButton();
         BT_Funcionario_Remover = new javax.swing.JButton();
         BT_Funcionario_Editar = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        Funcionario_Sal_Max = new javax.swing.JLabel();
+        Funcionario_Sal_Min = new javax.swing.JLabel();
+        Funcionario_Sal_Med = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         TB_Autor = new javax.swing.JTable();
@@ -737,6 +830,8 @@ public class main extends javax.swing.JFrame {
 
         jLabel22.setText("Matricula:");
 
+        Itens_Aluno_Centro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "none" }));
+
         jLabel21.setText("Centro:");
 
         BT_Aluno_Editar.setText("Editar");
@@ -781,11 +876,11 @@ public class main extends javax.swing.JFrame {
                             .addComponent(jLabel21)
                             .addComponent(jLabel22))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(TF_Aluno_Matricula)
-                            .addComponent(TF_Aluno_Nome)
-                            .addComponent(TF_Aluno_Endereco)
-                            .addComponent(Itens_Aluno_Centro, 0, 266, Short.MAX_VALUE))
+                            .addComponent(TF_Aluno_Nome, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TF_Aluno_Endereco, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Itens_Aluno_Centro, javax.swing.GroupLayout.Alignment.LEADING, 0, 266, Short.MAX_VALUE))
                         .addGap(18, 18, 18))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
@@ -809,12 +904,12 @@ public class main extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel22)
-                    .addComponent(TF_Aluno_Matricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TF_Aluno_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(TF_Aluno_Matricula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
@@ -1400,6 +1495,12 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        jLabel14.setText("Salário Máximo:  R$");
+
+        jLabel24.setText("Salário Mínimo:   R$");
+
+        jLabel25.setText("Média Salarial:    R$");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -1426,7 +1527,23 @@ public class main extends javax.swing.JFrame {
                             .addGroup(jPanel6Layout.createSequentialGroup()
                                 .addComponent(BT_Funcionario_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(BT_Funcionario_Remover)))))
+                                .addComponent(BT_Funcionario_Remover))))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                                    .addComponent(jLabel24)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(Funcionario_Sal_Min, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                                    .addComponent(jLabel14)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(Funcionario_Sal_Max, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel25)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(Funcionario_Sal_Med, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 819, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1434,15 +1551,30 @@ public class main extends javax.swing.JFrame {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TF_Funci_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TF_Funci_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(TF_Funci_Salario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel14)
+                            .addComponent(Funcionario_Sal_Max, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel24))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Funcionario_Sal_Min, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(TF_Funci_Salario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel25)
+                    .addComponent(Funcionario_Sal_Med, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BT_Funcionario_Editar)
                     .addComponent(BT_Funcionario_Remover)
@@ -1791,7 +1923,6 @@ public class main extends javax.swing.JFrame {
                 
                 //Testa se tem alguma informação nos campos
                 if(nomeNew.isEmpty() && siglaNew.isEmpty()){
-                    System.out.println("oi");
                     throw new CentroCamposNaoInformados();
                 }
             
@@ -1854,11 +1985,208 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Centro_EditarActionPerformed
 
     private void BT_Aluno_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_EditarActionPerformed
-        // TODO add your handling code here:
+        
+        
+        try{
+            System.out.println(TB_Aluno.getSelectedRow());
+            if(TB_Aluno.getSelectedRow()==-1){
+                throw new CentroLinhaNaoSelecionada();
+            }
+            else{
+                int linha = TB_Aluno.getSelectedRow();
+                String nomeNew = TF_Aluno_Nome.getText();
+                String matriculaNew = TF_Aluno_Matricula.getText();
+                String enderecoNew = TF_Aluno_Endereco.getText();
+                String centroNew = (String) Itens_Aluno_Centro.getSelectedItem();
+                
+                String matriculaOld = String.valueOf( TB_Aluno.getValueAt(linha,0));
+                String nomeOld = (String) TB_Aluno.getValueAt(linha,1);
+                String centroOld = (String) TB_Aluno.getValueAt(linha,2);
+                String enderecoOld = (String) TB_Aluno.getValueAt(linha,3);
+                
+                
+                //Testa se tem alguma informação nos campos
+                if(nomeNew.isEmpty() && matriculaNew.isEmpty() && enderecoNew.isEmpty()){
+                    throw new CentroCamposNaoInformados();
+                }
+            
+
+            
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                if(nomeNew.equals(nomeOld) && matriculaNew.equals(matriculaOld) && enderecoNew.equals(enderecoOld) && centroNew.equals(centroOld)){
+                    throw new CentroEdicaoIgual();       
+                }
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(!nomeNew.equals(nomeOld)){
+                        new DAO_Aluno().EditarNome(Integer.parseInt(matriculaOld), nomeNew); 
+                        TB_Aluno.setValueAt(nomeNew, linha, 1);
+                    }
+                
+
+                    if(!enderecoNew.equals(enderecoOld)){
+                        new DAO_Aluno().EditarEndereco(Integer.parseInt(matriculaOld), enderecoNew); 
+                        TB_Aluno.setValueAt(enderecoNew, linha, 3);
+                    }
+                    
+                    if(!centroNew.equals(centroOld)){
+                        new DAO_Aluno().EditarCentro(Integer.parseInt(matriculaOld), DAO_Aluno.PullCentro(centroNew)); 
+                        TB_Aluno.setValueAt(centroNew, linha, 2);
+                    }
+                            
+                            
+                    //testa se a matricula fornecida é diferente da já cadastrada
+                    if(!matriculaNew.equals(matriculaOld)){
+
+                        //testa se a sigla fornecida e diferente de alguma ja cadastrada
+                        if(DAO_Aluno.TestaMatricula(matriculaNew)==false){
+                            new DAO_Aluno().EditarMatricula(Integer.parseInt(matriculaNew), Integer.parseInt(matriculaOld)); 
+                            TB_Aluno.setValueAt(matriculaNew, linha, 0);
+                            matriculaOld=matriculaNew;
+                        }
+                        else{
+                        throw new CentroSiglaUsada();
+                        }
+                    }
+                
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Aluno_Nome.setText("");
+                    TF_Aluno_Endereco.setText("");
+                    TF_Aluno_Matricula.setText("");
+                    Itens_Aluno_Centro.setSelectedIndex(0);
+
+                }
+            
+            }
+        }
+        catch(CentroCamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A sigla informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroLinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
     }//GEN-LAST:event_BT_Aluno_EditarActionPerformed
 
     private void BT_Aluno_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_BuscarActionPerformed
-        // TODO add your handling code here:
+        
+        String nome = TF_Aluno_Nome.getText();
+        String matricula = TF_Aluno_Matricula.getText();
+        String endereco = TF_Aluno_Endereco.getText();
+        String centro = (String) Itens_Aluno_Centro.getSelectedItem();
+        System.out.println("oi");
+      
+        int caso = 0;
+                   
+            if(nome.isEmpty() && matricula.isEmpty() && endereco.isEmpty() && !centro.equals("none"))
+                caso = 1;
+            else if(nome.isEmpty() && matricula.isEmpty() && !endereco.isEmpty() && centro.equals("none"))
+                caso = 2;
+            else if(nome.isEmpty() && matricula.isEmpty() && !endereco.isEmpty() && !centro.equals("none"))
+                caso = 3;
+            else if(nome.isEmpty() && !matricula.isEmpty() && endereco.isEmpty() && centro.equals("none"))
+                caso = 4;
+            else if(nome.isEmpty() && !matricula.isEmpty() && endereco.isEmpty() && !centro.equals("none"))
+                caso = 5;
+            else if(nome.isEmpty() && !matricula.isEmpty() && !endereco.isEmpty() && centro.equals("none"))
+                caso = 6;
+            else if(nome.isEmpty() && !matricula.isEmpty() && !endereco.isEmpty() && !centro.equals("none"))
+                caso = 7;
+            else if(!nome.isEmpty() && matricula.isEmpty() && endereco.isEmpty() && centro.equals("none"))
+                caso = 8;
+            else if(!nome.isEmpty() && matricula.isEmpty() && endereco.isEmpty() && !centro.equals("none"))
+                caso = 9;
+            else if(!nome.isEmpty() && matricula.isEmpty() && !endereco.isEmpty() && centro.equals("none"))
+                caso = 10;
+            else if(!nome.isEmpty() && matricula.isEmpty() && !endereco.isEmpty() && !centro.equals("none"))
+                caso = 11;
+            else if(!nome.isEmpty() && !matricula.isEmpty() && endereco.isEmpty() && centro.equals("none"))
+                caso = 12;
+            else if(!nome.isEmpty() && !matricula.isEmpty() && endereco.isEmpty() && !centro.equals("none"))
+                caso = 13;
+            else if(!nome.isEmpty() && !matricula.isEmpty() && !endereco.isEmpty() && centro.equals("none"))
+                caso = 14;
+            else if(!nome.isEmpty() && !matricula.isEmpty() && !endereco.isEmpty() && !centro.equals("none"))
+                caso = 15;
+            
+            
+            
+            
+            
+            else if(!nome.isEmpty() && matricula.isEmpty() && endereco.isEmpty() && !centro.equals("none"))
+                caso = 7;
+
+        
+            
+            int fk = DAO_Aluno.PullCentro(centro);
+            switch(caso){
+                 case 1:
+                    carregarAlunosUm(fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.fk_cod_centro=?");
+                    break;
+                case 2:
+                    carregarAlunosUm(endereco, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.endereco=?");
+                    break;
+                case 3:
+                    carregarAlunosDois(endereco, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE endereco=? AND Aluno.fk_cod_centro=?");
+                    break;
+                case 4:
+                    carregarAlunosUm(matricula, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Matricula=?");
+                    break;
+                case 5:
+                    carregarAlunosDois(matricula, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE matricula=? AND Aluno.fk_cod_centro=?");
+                    break;
+                case 6:
+                    carregarAlunosDois(matricula, endereco, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE matricula=? AND endereco=?");
+                    break;
+                case 7:
+                    carregarAlunosTres(matricula, endereco, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE matricula=? AND endereco=? AND Aluno.fk_Cod_Centro=?");
+                    break;
+                case 8:
+                    carregarAlunosUm(nome, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=?");
+                    break;
+                case 9:
+                    carregarAlunosDois(nome, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND Aluno.fk_cod_centro=?");
+                    break;
+                case 10:
+                    carregarAlunosDois(nome, endereco, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND endereco=?");
+                    break;
+                case 11:
+                    carregarAlunosTres(nome, endereco, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND endereco=? AND Aluno.fk_Cod_Centro=?");
+                    break;
+                case 12:
+                    carregarAlunosDois(nome, matricula, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND matricula=?");
+                    break;
+                case 13:
+                    carregarAlunosTres(nome, matricula, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND matricula=? AND Aluno.fk_Cod_Centro=?");
+                    break;
+                case 14:
+                    carregarAlunosTres(nome, matricula, endereco, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND matricula=? AND endereco=?");
+                    break;
+                case 15:
+                    carregarAlunosQuatro(nome, matricula, endereco, fk, "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro WHERE Aluno.nome=? AND matricula=? AND endereco=? AND Aluno.fk_cod_centro=?");
+                    break;    
+                default:
+                    carregarAlunos();           
+            }
+
+        
+        
+        
+        
     }//GEN-LAST:event_BT_Aluno_BuscarActionPerformed
 
     private void BT_Aluno_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_CadastrarActionPerformed
@@ -1935,6 +2263,7 @@ public class main extends javax.swing.JFrame {
             TF_Aluno_Nome.setText("");
             TF_Aluno_Matricula.setText("");
             TF_Aluno_Endereco.setText("");
+            Itens_Aluno_Centro.setSelectedIndex(0);
             Itens_Empres_Aluno.removeItem(nome);
             JOptionPane.showMessageDialog(null, "Aluno removido com sucesso.", 
                                               "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -2101,6 +2430,9 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JRadioButton CheckBox_Autoajuda;
     private javax.swing.JRadioButton CheckBox_Literatura;
     private javax.swing.JRadioButton CheckBox_Outro;
+    private javax.swing.JLabel Funcionario_Sal_Max;
+    private javax.swing.JLabel Funcionario_Sal_Med;
+    private javax.swing.JLabel Funcionario_Sal_Min;
     private javax.swing.JComboBox<String> Itens_Aluno_Centro;
     private javax.swing.JComboBox<String> Itens_Bib_Centro;
     private javax.swing.JComboBox<String> Itens_Empres_Aluno;
@@ -2141,6 +2473,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -2151,6 +2484,8 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;

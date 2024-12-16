@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 
 import Entitys.Centro;
 import biblioteca.SQL_connection;
+import biblioteca.main;
 
 public class DAO_Centro{
     
@@ -21,7 +22,6 @@ public class DAO_Centro{
 	        ps.setString(2, centro.getSigla());
 
 	        ps.executeUpdate();  // Executa a inserção no banco
-
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {

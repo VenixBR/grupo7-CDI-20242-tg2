@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import Entitys.Aluno;
 import biblioteca.SQL_connection;
+import java.sql.Statement;
 
 public class DAO_Aluno {
 
@@ -82,6 +83,104 @@ public class DAO_Aluno {
             }
         }
     }
+    
+    public void EditarNome(int codigo, String nome){
+        
+        String SQL_command = "UPDATE Aluno SET Nome=? where Matricula=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setString(1, nome);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
+    public void EditarEndereco(int codigo, String endereco){
+        
+        String SQL_command = "UPDATE Aluno SET Endereco=? where Matricula=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setString(1, endereco);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
+    
+    public void EditarCentro(int matricula, int cod_centro){
+        
+        String SQL_command = "UPDATE Aluno SET fk_Cod_Centro=? where Matricula=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setInt(1, cod_centro);
+	    ps.setInt(2, matricula);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
+    
+    
+    
+    
+    public void EditarMatricula(int antiga, int nova){
+        
+        String SQL_command = "UPDATE Aluno SET Matricula=? where Matricula=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setInt(1, antiga);
+	    ps.setInt(2, nova);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
     
     public static boolean TestaMatricula(String matricula){
         
