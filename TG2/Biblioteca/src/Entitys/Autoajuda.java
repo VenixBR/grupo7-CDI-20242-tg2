@@ -4,6 +4,13 @@ public class Autoajuda {
     
     private String Assunto;
     private int fk_Cod_Publicacao;
+    
+    public Autoajuda(){}
+    
+    public Autoajuda(String assunto, int cod_pub){
+        Assunto = assunto;
+        fk_Cod_Publicacao = cod_pub;
+    }
 
     public String getAssunto() {
         return Assunto;

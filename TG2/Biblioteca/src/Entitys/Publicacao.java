@@ -6,11 +6,20 @@ public class Publicacao {
 
     private int Cod_Publicacao;
     private String Tipo;
-    private Date Ano;
+    private int Ano;
     private String Nome;
     private int fk_Cod_Biblioteca;
+    
+    public Publicacao(){}
+    
+    public Publicacao(String tipo, int ano, String nome, int cod_bib){
+        Tipo = tipo;
+        Ano = ano;
+        Nome = nome;
+        fk_Cod_Biblioteca = cod_bib;
+    }
 
-    public Date getAno() {
+    public int getAno() {
         return Ano;
     }
 
@@ -30,7 +39,7 @@ public class Publicacao {
         return Tipo;
     }
 
-    public void setAno(Date ano) { 
+    public void setAno(int ano) { 
         this.Ano = ano;
     }
 

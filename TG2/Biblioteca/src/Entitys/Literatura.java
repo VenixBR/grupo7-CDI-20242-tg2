@@ -4,6 +4,13 @@ public class Literatura {
 
     private String Genero_Textual;
     private int fk_Cod_Publicacao;
+    
+    public Literatura(){}
+    
+    public Literatura(String genero, int cod_pub){
+        Genero_Textual = genero;
+        fk_Cod_Publicacao = cod_pub;
+    }
 
     public int getFk_Cod_Publicacao() {
         return fk_Cod_Publicacao;

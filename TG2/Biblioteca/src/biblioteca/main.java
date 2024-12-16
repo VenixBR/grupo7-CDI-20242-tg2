@@ -6,14 +6,25 @@ package biblioteca;
 
 import DAOUser.DAO_Centro;
 import DAOUser.DAO_Aluno;
+import DAOUser.DAO_Publicacao;
+import DAOUser.DAO_Biblioteca;
+import DAOUser.DAO_Funcionario;
+import DAOUser.DAO_Autor;
 import Entitys.Centro;
 import Entitys.Aluno;
-import Exceptions.CentroNomeGrande;
+import Entitys.Academico;
+import Entitys.Autor;
+import Entitys.Literatura;
+import Entitys.Autoajuda;
+import Entitys.Publicacao;
+import Entitys.Funcionario;
+import Exceptions.NomeGrande;
 import Exceptions.CentroSiglaGrande;
+import Exceptions.PubAnoGrande;
 import DAOUser.DAO_General;
-import Exceptions.CentroCamposNaoInformados;
+import Exceptions.CamposNaoInformados;
 import Exceptions.CentroEdicaoIgual;
-import Exceptions.CentroLinhaNaoSelecionada;
+import Exceptions.LinhaNaoSelecionada;
 import Exceptions.CentroSiglaUsada;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
@@ -200,8 +211,6 @@ public class main extends javax.swing.JFrame {
 	}
         
         // Método para preencher a tabela com os centros com o nome indicado
-	
-        
         private void carregarAlunosUm(Object parametro, String SQL) {
 	    try {
 	        if (conn == null || conn.isClosed()) {
@@ -283,7 +292,7 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
         
-         private void carregarAlunosQuatro(Object parametro1, Object parametro2 , Object parametro3, Object parametro4, String SQL) {
+        private void carregarAlunosQuatro(Object parametro1, Object parametro2 , Object parametro3, Object parametro4, String SQL) {
 	    try {
 	        if (conn == null || conn.isClosed()) {
 	            conectar();
@@ -311,7 +320,6 @@ public class main extends javax.swing.JFrame {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    }
 	}
-        
 
 	private void carregarPublicacoes() {
 	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Sigla AS Biblioteca, " +
@@ -408,6 +416,125 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
 
+        private void carregarFuncionariosSalarios_MIN_MAX_AVG() {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+                
+	        String query = "SELECT Salario FROM Funcionario WHERE Salario = (SELECT MAX(Salario) FROM Funcionario)"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ResultSet rs = ps.executeQuery();
+                
+                rs.next(); //pula para salario
+                Funcionario_Sal_Max.setText(rs.getString("salario"));
+                
+	        rs.close();
+                ps.close();
+                
+                String query1 = "SELECT Salario FROM Funcionario WHERE Salario = (SELECT MIN(Salario) FROM Funcionario)"; 
+                PreparedStatement ps1 = null;
+                ps1 = SQL_connection.getConnection().prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
+                ResultSet rs1 = ps1.executeQuery();
+                
+                rs1.next(); //pula para salario
+                Funcionario_Sal_Min.setText(rs1.getString("salario"));
+                
+                String query2 = "SELECT ROUND(AVG(Salario),2) AS Media_Salarial FROM Funcionario;"; 
+                PreparedStatement ps2 = null;
+                ps2 = SQL_connection.getConnection().prepareStatement(query2, Statement.RETURN_GENERATED_KEYS);
+                ResultSet rs2 = ps2.executeQuery();
+                
+                rs2.next(); //pula para salario
+                Funcionario_Sal_Med.setText(rs2.getString("Media_Salarial"));
+                
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+	private void carregarFuncionariosNome(String nome) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+                
+	        String query = "SELECT * FROM Funcionario WHERE Nome=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Funcionario.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Funcionario"), rs.getString("nome"), rs.getString("salario") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+      
+	private void carregarFuncionariosSalario(String salario) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Funcionario WHERE Salario=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, salario);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Funcionario.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Funcionario"), rs.getString("nome"), rs.getString("salario") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        private void carregarFuncionariosNomeSalario(String nome, String salario) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Funcionario WHERE Nome=? AND Salario=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ps.setString(2, salario);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Funcionario.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Funcionario"), rs.getString("nome"), rs.getString("salario") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+
 	private void carregarBibliotecas() {
 	    String query = "SELECT Cod_Biblioteca, Nome, Endereco, Sigla FROM Biblioteca";
 
@@ -455,6 +582,8 @@ public class main extends javax.swing.JFrame {
 	    Connection conn = null;
 	    Statement stmt = null;
 	    ResultSet rs = null;
+            
+            carregarFuncionariosSalarios_MIN_MAX_AVG();
 
 	    try {
 	        conn = SQL_connection.getConnection();
@@ -468,7 +597,7 @@ public class main extends javax.swing.JFrame {
 	            Object[] row = {
 	                rs.getInt("Cod_Funcionario"),
 	                rs.getString("Nome"),
-	                rs.getBigDecimal("Salario")
+	                rs.getString("Salario")
 	            };
 	            model.addRow(row);
                     Itens_Empres_Funcionario.addItem(rs.getString("Nome"));
@@ -537,6 +666,84 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
 
+        private void carregarAutorNome(String nome) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Autor WHERE Nome=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Autor.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Autor"), rs.getString("nome"), rs.getString("pais") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+         
+        private void carregarAutorPais(String pais) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Autor WHERE Pais=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, pais);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Autor.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Autor"), rs.getString("nome"), rs.getString("pais") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
+        private void carregarAutorNomePais(String nome, String pais) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Autor WHERE Nome=? AND Pais=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ps.setString(2, pais);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Autor.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Autor"), rs.getString("nome"), rs.getString("pais") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
 	
     /**
      * Creates new form main
@@ -567,6 +774,9 @@ public class main extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
+        buttonGroup4 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
@@ -621,6 +831,7 @@ public class main extends javax.swing.JFrame {
         BT_Publicacao_Buscar = new javax.swing.JButton();
         BT_Publicacao_Cadastrar = new javax.swing.JButton();
         BT_Publicacao_Remover = new javax.swing.JButton();
+        jLabel26 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TB_Biblioteca = new javax.swing.JTable();
@@ -941,6 +1152,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "Ano", "Biblioteca", "Tipo"
             }
         ));
+        TB_Publicacao.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_PublicacaoMouseClicked(evt);
+            }
+        });
         jScrollPane5.setViewportView(TB_Publicacao);
         if (TB_Publicacao.getColumnModel().getColumnCount() > 0) {
             TB_Publicacao.getColumnModel().getColumn(0).setPreferredWidth(30);
@@ -949,6 +1165,8 @@ public class main extends javax.swing.JFrame {
             TB_Publicacao.getColumnModel().getColumn(3).setPreferredWidth(40);
             TB_Publicacao.getColumnModel().getColumn(4).setPreferredWidth(100);
         }
+
+        Itens_Pub_Biblioteca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "none" }));
 
         jLabel15.setText("Biblioteca:");
 
@@ -990,17 +1208,12 @@ public class main extends javax.swing.JFrame {
             }
         });
 
-        TF_Pub_Area.setEditable(false);
-
         jLabel17.setText("Area:");
-
-        TF_Pub_Edicao.setEditable(false);
 
         jLabel36.setText("Ediçao:");
 
         jLabel37.setText("Genero:");
 
-        TF_Pub_Genero.setEditable(false);
         TF_Pub_Genero.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TF_Pub_GeneroActionPerformed(evt);
@@ -1008,10 +1221,6 @@ public class main extends javax.swing.JFrame {
         });
 
         jLabel38.setText("Assunto:");
-
-        TF_Pub_Tipo.setEditable(false);
-
-        TF_Pub_Assunto.setEditable(false);
 
         BT_Publicacao_Editar.setText("Editar");
         BT_Publicacao_Editar.addActionListener(new java.awt.event.ActionListener() {
@@ -1041,6 +1250,8 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        jLabel26.setText("Autores:");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -1049,62 +1260,68 @@ public class main extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel38)
                                     .addComponent(CheckBox_Autoajuda))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(TF_Pub_Assunto))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                            .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(84, 84, 84)
                                 .addComponent(TF_Pub_Area))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel16)
-                                            .addComponent(jLabel35))
-                                        .addGap(36, 36, 36)
-                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(TF_Pub_Nome, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                                            .addComponent(TF_Pub_Ano)))
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel15)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel18)
-                                    .addComponent(CheckBox_Academico)
-                                    .addComponent(CheckBox_Literatura)
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(CheckBox_Outro)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(TF_Pub_Tipo)))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel17)
                                         .addGroup(jPanel4Layout.createSequentialGroup()
                                             .addComponent(jLabel36)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(TF_Pub_Edicao, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(jLabel37)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jLabel16)
+                                                .addComponent(jLabel35))
+                                            .addGap(36, 36, 36)
+                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(TF_Pub_Nome, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                                                .addComponent(TF_Pub_Ano)))
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                            .addComponent(jLabel15)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(CheckBox_Academico, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(CheckBox_Literatura, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                                        .addComponent(CheckBox_Outro)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(18, 18, 18))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(BT_Publicacao_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BT_Publicacao_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(BT_Publicacao_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(BT_Publicacao_Remover)))
+                                .addGap(16, 16, 16)
+                                .addComponent(BT_Publicacao_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BT_Publicacao_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(BT_Publicacao_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(BT_Publicacao_Remover))))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel26)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(223, 223, 223))
@@ -1127,7 +1344,9 @@ public class main extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel26)
+                .addGap(17, 17, 17)
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CheckBox_Academico)
@@ -1456,6 +1675,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "Salário"
             }
         ));
+        TB_Funcionario.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_FuncionarioMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(TB_Funcionario);
         if (TB_Funcionario.getColumnModel().getColumnCount() > 0) {
             TB_Funcionario.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -1600,6 +1824,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Nome", "País"
             }
         ));
+        TB_Autor.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_AutorMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(TB_Autor);
         if (TB_Autor.getColumnModel().getColumnCount() > 0) {
             TB_Autor.getColumnModel().getColumn(0).setPreferredWidth(80);
@@ -1720,13 +1949,13 @@ public class main extends javax.swing.JFrame {
     
         try{
             if(nome.isEmpty() || sigla.isEmpty()){
-                throw new CentroCamposNaoInformados();
+                throw new CamposNaoInformados();
             }
             else if (sigla.length()>10){
                 throw new CentroSiglaGrande();
             }
             else if (nome.length()>50){
-                throw new CentroNomeGrande();
+                throw new NomeGrande();
             }
             else if(DAO_Centro.TestaSigla(TF_Centro_Sigla.getText()) == true){
                 throw new CentroSiglaUsada();
@@ -1758,11 +1987,11 @@ public class main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "A sigla pode ter no máximo 10 caracteres!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroNomeGrande e){
+        catch(NomeGrande e){
             JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroCamposNaoInformados e){
+        catch(CamposNaoInformados e){
             JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -1910,9 +2139,8 @@ public class main extends javax.swing.JFrame {
 
         
         try{
-            //System.out.println(TB_Centro.getSelectedRow());
             if(TB_Centro.getSelectedRow()==-1){
-                throw new CentroLinhaNaoSelecionada();
+                throw new LinhaNaoSelecionada();
             }
             else{
                 String nomeNew = TF_Centro_Nome.getText();
@@ -1923,7 +2151,7 @@ public class main extends javax.swing.JFrame {
                 
                 //Testa se tem alguma informação nos campos
                 if(nomeNew.isEmpty() && siglaNew.isEmpty()){
-                    throw new CentroCamposNaoInformados();
+                    throw new CamposNaoInformados();
                 }
             
 
@@ -1962,7 +2190,7 @@ public class main extends javax.swing.JFrame {
             
             }
         }
-        catch(CentroCamposNaoInformados e){
+        catch(CamposNaoInformados e){
             JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
                                               "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -1974,7 +2202,7 @@ public class main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroLinhaNaoSelecionada e){
+        catch(LinhaNaoSelecionada e){
             JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -1988,9 +2216,8 @@ public class main extends javax.swing.JFrame {
         
         
         try{
-            System.out.println(TB_Aluno.getSelectedRow());
             if(TB_Aluno.getSelectedRow()==-1){
-                throw new CentroLinhaNaoSelecionada();
+                throw new LinhaNaoSelecionada();
             }
             else{
                 int linha = TB_Aluno.getSelectedRow();
@@ -2007,7 +2234,7 @@ public class main extends javax.swing.JFrame {
                 
                 //Testa se tem alguma informação nos campos
                 if(nomeNew.isEmpty() && matriculaNew.isEmpty() && enderecoNew.isEmpty()){
-                    throw new CentroCamposNaoInformados();
+                    throw new CamposNaoInformados();
                 }
             
 
@@ -2061,7 +2288,7 @@ public class main extends javax.swing.JFrame {
             
             }
         }
-        catch(CentroCamposNaoInformados e){
+        catch(CamposNaoInformados e){
             JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
                                               "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -2073,7 +2300,7 @@ public class main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroLinhaNaoSelecionada e){
+        catch(LinhaNaoSelecionada e){
             JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -2088,7 +2315,6 @@ public class main extends javax.swing.JFrame {
         String matricula = TF_Aluno_Matricula.getText();
         String endereco = TF_Aluno_Endereco.getText();
         String centro = (String) Itens_Aluno_Centro.getSelectedItem();
-        System.out.println("oi");
       
         int caso = 0;
                    
@@ -2198,13 +2424,13 @@ public class main extends javax.swing.JFrame {
     
         try{
             if(nome.isEmpty() || endereco.isEmpty() || matricula.isEmpty()){
-                throw new CentroCamposNaoInformados();
+                throw new CamposNaoInformados();
             }
             else if (nome.length()>50){
                 throw new CentroSiglaGrande();
             }
             else if (endereco.length()>100){
-                throw new CentroNomeGrande();
+                throw new NomeGrande();
             }
             else if(DAO_Aluno.TestaMatricula(TF_Centro_Sigla.getText()) == true){
                 throw new CentroSiglaUsada();
@@ -2229,11 +2455,11 @@ public class main extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroNomeGrande e){
+        catch(NomeGrande e){
             JOptionPane.showMessageDialog(null, "O endereco pode ter no máximo 100 caracteres!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
-        catch(CentroCamposNaoInformados e){
+        catch(CamposNaoInformados e){
             JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
                                                   "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -2276,19 +2502,354 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Aluno_RemoverActionPerformed
 
     private void BT_Publicacao_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Publicacao_EditarActionPerformed
-        // TODO add your handling code here:
+        
+        
+        try{
+            if(TB_Publicacao.getSelectedRow()==-1){
+                throw new LinhaNaoSelecionada();
+            }
+            else{
+                int linha = TB_Publicacao.getSelectedRow();
+                String nomeNew = TF_Pub_Nome.getText();
+                String anoNew = TF_Pub_Ano.getText();  
+                String bibliotecaNew = (String) Itens_Pub_Biblioteca.getSelectedItem();
+                String tipoNew = null;
+                String edicaoNew = null;
+                String areaNew = null;
+                String generoNew = null;
+                String assuntoNew = null;
+                
+                int id = Integer.parseInt(TB_Publicacao.getValueAt(linha, 0).toString());
+                
+                if(CheckBox_Academico.isSelected()){
+                    tipoNew = "Acadêmico";
+                    edicaoNew = TF_Pub_Edicao.getText();
+                    areaNew = TF_Pub_Area.getText();
+                }
+                else if (CheckBox_Literatura.isSelected()){
+                    tipoNew = "Literatura";
+                    generoNew = TF_Pub_Genero.getText();
+                }
+                else if (CheckBox_Autoajuda.isSelected()){
+                    tipoNew = "Autoajuda";
+                    assuntoNew = TF_Pub_Assunto.getText();
+                }
+                else if (CheckBox_Outro.isSelected()) tipoNew = TF_Pub_Tipo.getText();
+                
+                String nomeOld = (String) TB_Publicacao.getValueAt(linha,1);
+                String anoOld = String.valueOf( TB_Publicacao.getValueAt(linha,2));
+                String bibliotecaOld = (String) TB_Publicacao.getValueAt(linha,3);
+                String tipoOld = (String) TB_Publicacao.getValueAt(linha,4);
+                String areaOld = null;
+                String edicaoOld = null;
+                String generoOld = null;
+                String assuntoOld = null;
+                
+                if(tipoOld.equals("Acadêmico")) {
+                    Academico temp = new DAO_Publicacao().BuscarAcademico(id);
+                    areaOld = temp.getArea();
+                    edicaoOld = String.valueOf(temp.getEdicao());
+                }
+                else if(tipoOld.equals("Literatura")) {
+                    String temp = new DAO_Publicacao().BuscarLiteratura(id);
+                    generoOld = temp;
+                }
+                else if(tipoOld.equals("Autoajuda")) {
+                    String temp = new DAO_Publicacao().BuscarAutoajuda(id);
+                    assuntoOld = temp;
+                }
+                
+                
+                //Testa se tem alguma informação nos campos
+                if(nomeNew.isEmpty() || anoNew.isEmpty() || bibliotecaNew.equals("none") || 
+                (CheckBox_Academico.isSelected() && (areaNew.isEmpty()||edicaoNew.isEmpty())) || 
+                (CheckBox_Literatura.isSelected()&&generoNew.isEmpty()) || 
+                (CheckBox_Autoajuda.isSelected()&&assuntoNew.isEmpty()) || 
+                (CheckBox_Outro.isSelected() && tipoNew.isEmpty())){
+                throw new CamposNaoInformados();
+                }
+                else if (nomeNew.length()>50){
+                    throw new CentroSiglaGrande();
+                }
+                else if (tipoNew.length()>50){
+                    throw new NomeGrande();
+                }
+                else if (anoNew.length()>4){
+                    throw new PubAnoGrande();
+                }
+                
+                
+                //boolean teste1 = tipoNew.equals(tipoOld);
+                boolean teste2 = tipoNew.equals(tipoOld)&&tipoNew.equals("Acadêmico")&&edicaoNew.equals(edicaoOld);
+                boolean teste3 = tipoNew.equals(tipoOld)&&tipoNew.equals("Acadêmico")&&areaNew.equals(areaOld);
+                boolean teste4 = tipoNew.equals(tipoOld)&&tipoNew.equals("Literatura")&&generoNew.equals(generoOld);
+                boolean teste5 = tipoNew.equals(tipoOld)&&tipoNew.equals("Autoajuda")&&assuntoNew.equals(assuntoOld);
+                boolean teste =  (teste2 && teste3) || teste4 || teste5;
+                  
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                
+                if(nomeNew.equals(nomeOld) && anoNew.equals(anoOld) && bibliotecaNew.equals(bibliotecaOld) && teste){
+                    throw new CentroEdicaoIgual();       
+                }
+                
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(!nomeNew.equals(nomeOld)){
+                        new DAO_Publicacao().EditarNome(id, nomeNew); 
+                        TB_Publicacao.setValueAt(nomeNew, linha, 1);
+                    }
+                    
+                    if(!anoNew.equals(anoOld)){
+                        new DAO_Publicacao().EditarAno(id, Integer.parseInt(anoNew)); 
+                        TB_Publicacao.setValueAt(anoNew, linha, 2);
+                    }
+                    
+                    if(!bibliotecaNew.equals(bibliotecaOld)){
+                        new DAO_Publicacao().EditarBiblioteca(id, DAO_Publicacao.PullBiblioteca(bibliotecaNew)); 
+                        TB_Publicacao.setValueAt(bibliotecaNew, linha, 3);
+                    }
+                
+                    if (tipoNew.equals(tipoOld)){
+                        
+                        if(tipoOld.equals("Acadêmico")){
+                            if(!edicaoNew.equals(edicaoOld)){
+                                new DAO_Publicacao().EditarEdicao(id, Integer.parseInt(edicaoNew)); 
+                            }
+                    
+                            if(!areaNew.equals(areaOld)){
+                                new DAO_Publicacao().EditarArea(id, areaNew); 
+                            }
+                        }
+                        
+                        else if(tipoOld.equals("Literatura")){
+                            if(!generoNew.equals(generoOld)){
+                                new DAO_Publicacao().EditarGenero(id, generoNew); 
+                            }
+                        }    
+                        
+                        else if(tipoOld.equals("Autoajuda")){
+                            if(!assuntoNew.equals(assuntoOld)){
+                                new DAO_Publicacao().EditarAssunto(id, assuntoNew); 
+                            }
+                        }    
+                    }
+                    
+                    if (!tipoNew.equals(tipoOld)){
+                        
+                        if(tipoOld.equals("Acadêmico")){
+                            new DAO_Publicacao().RemoverAcademico(id);
+                        }
+                        
+                        if(tipoOld.equals("Literatura")){
+                            new DAO_Publicacao().RemoverLiteratura(id);
+                        }
+                        
+                        if(tipoOld.equals("Autoajuda")){
+                            new DAO_Publicacao().RemoverAutoajuda(id);
+                        }
+    
+                        if(tipoNew.equals("Acadêmico")){
+                            new DAO_Publicacao().CadastrarAcademico(new Academico(Integer.parseInt(edicaoNew), areaNew, id));
+                        }
+                        if(tipoNew.equals("Literatura")){
+                            new DAO_Publicacao().CadastrarLiteratura(new Literatura(generoNew, id));
+                        }
+                         if(tipoNew.equals("Autoajuda")){
+                            new DAO_Publicacao().CadastrarAutoajuda(new Autoajuda(assuntoNew, id));
+                        }
+                        new DAO_Publicacao().EditarTipo(id, tipoNew);
+                        TB_Publicacao.setValueAt(tipoNew, linha, 4);
+                        
+                    }
+                        
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Aluno_Nome.setText("");
+                    TF_Aluno_Endereco.setText("");
+                    TF_Aluno_Matricula.setText("");
+                    Itens_Aluno_Centro.setSelectedIndex(0);
+
+                }
+            
+            }
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, informe todos campo para editar.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroSiglaGrande e){
+            JOptionPane.showMessageDialog(null, "A sigla pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(NomeGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 100 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(PubAnoGrande e){
+            JOptionPane.showMessageDialog(null, "O ano pode ter no máximo 4 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(LinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+        
     }//GEN-LAST:event_BT_Publicacao_EditarActionPerformed
 
     private void BT_Publicacao_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Publicacao_BuscarActionPerformed
-        // TODO add your handling code here:
+        JOptionPane.showMessageDialog(null, "Lula roubou a funcao deste botao.", 
+                                              "Sucesso", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_BT_Publicacao_BuscarActionPerformed
 
     private void BT_Publicacao_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Publicacao_CadastrarActionPerformed
-        // TODO add your handling code here:
+        
+        int linha = TB_Publicacao.getSelectedRow(); 
+        String nome = TF_Pub_Nome.getText(); 
+        String ano = TF_Pub_Ano.getText(); 
+        String biblioteca = (String) Itens_Pub_Biblioteca.getSelectedItem();
+        int caso = 0;
+        String area = TF_Pub_Area.getText(); 
+        String edicao = TF_Pub_Edicao.getText(); 
+        String genero = TF_Pub_Genero.getText(); 
+        String assunto = TF_Pub_Assunto.getText();
+        String tipo = null;
+        
+        if (CheckBox_Academico.isSelected()){
+            tipo = "Acadêmico"; 
+        }
+        else if (CheckBox_Literatura.isSelected()){
+            tipo = "Literatura";
+        }
+        else if (CheckBox_Autoajuda.isSelected()){
+            tipo = "Autoajuda";
+        }
+        else
+            tipo = TF_Pub_Tipo.getText();
+        
+        try{
+            if(nome.isEmpty() || ano.isEmpty() || biblioteca.equals("none") || 
+                (CheckBox_Academico.isSelected() && (area.isEmpty()||edicao.isEmpty())) || 
+                (CheckBox_Literatura.isSelected()&&genero.isEmpty()) || 
+                (CheckBox_Autoajuda.isSelected()&&assunto.isEmpty()) || 
+                (CheckBox_Outro.isSelected() && tipo.isEmpty())){
+                throw new CamposNaoInformados();
+            }
+            else if (nome.length()>50){
+                throw new CentroSiglaGrande();
+            }
+            else if (tipo.length()>50){
+                throw new NomeGrande();
+            }
+            else if (ano.length()>4){
+                throw new PubAnoGrande();
+            }
+            
+            int fk = DAO_Biblioteca.PullBiblioteca(biblioteca);
+            int cod = new DAO_General().ReturnLastCod("Publicacao") + 1;
+            new DAO_Publicacao().CadastrarPublicacao(new Publicacao(tipo, Integer.parseInt(ano), nome, fk));
+          
+            DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Publicacao.getModel();
+            Object[] data = {cod, nome, ano, biblioteca, tipo};
+            Table_Aluno.addRow(data);
+            
+            if(tipo.equals("Acadêmico")){
+                new DAO_Publicacao().CadastrarAcademico(new Academico(Integer.parseInt(edicao), area, cod));
+            }
+            else if(tipo.equals("Literatura")){
+                new DAO_Publicacao().CadastrarLiteratura(new Literatura(genero, cod));
+            }
+            else if(tipo.equals("Autoajuda")){
+                new DAO_Publicacao().CadastrarAutoajuda(new Autoajuda(assunto, cod));
+            }
+            
+            
+            
+            Itens_Empres_Publicacao.addItem(nome);
+            
+            TF_Aluno_Nome.setText("");
+            TF_Aluno_Matricula.setText("");
+            TF_Aluno_Endereco.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Publicacao cadastrada com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(CentroSiglaGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(NomeGrande e){
+            JOptionPane.showMessageDialog(null, "O tipo pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(PubAnoGrande e){
+            JOptionPane.showMessageDialog(null, "O ano pode ter no máximo 4 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }/*
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A matricula informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        */
+        
+        
+        
     }//GEN-LAST:event_BT_Publicacao_CadastrarActionPerformed
 
     private void BT_Publicacao_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Publicacao_RemoverActionPerformed
-        // TODO add your handling code here:
+       
+        //Testa se tem alguma linha selecionada
+        if(TB_Publicacao.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 0);
+            String tipo = (String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4);
+            
+            DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Publicacao.getModel();
+            Table_Aluno.removeRow(TB_Publicacao.getSelectedRow());
+            
+            if (tipo.equals("Acadêmico")){
+                new DAO_Publicacao().RemoverAcademico(id);
+            }
+            else if (tipo.equals("Literatura")){
+                new DAO_Publicacao().RemoverLiteratura(id);
+            }
+            else if (tipo.equals("Autoajuda")){
+                new DAO_Publicacao().RemoverAutoajuda(id);
+            }
+            
+
+            new DAO_Publicacao().RemoverPublicacao(id);
+            
+            String nome = TF_Pub_Nome.getText();
+            TF_Pub_Nome.setText("");
+            TF_Pub_Ano.setText("");
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setText("");
+            Itens_Pub_Biblioteca.setSelectedIndex(0);
+            Itens_Empres_Publicacao.removeItem(nome);
+            JOptionPane.showMessageDialog(null, "Aluno removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+
+
+
     }//GEN-LAST:event_BT_Publicacao_RemoverActionPerformed
 
     private void BT_Biblioteca_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Biblioteca_BuscarActionPerformed
@@ -2324,35 +2885,334 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Emprestimo_EditarActionPerformed
 
     private void BT_Funcionario_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Funcionario_BuscarActionPerformed
-        // TODO add your handling code here:
+        String nome = TF_Funci_Nome.getText();
+        String salario = TF_Funci_Salario.getText();
+        int caso = 0;
+        
+        
+
+            if(!nome.isEmpty() && salario.isEmpty())
+                caso = 1;
+            else if(nome.isEmpty() && !salario.isEmpty())
+                caso = 2;
+            else if(!nome.isEmpty() && !salario.isEmpty())
+                caso = 3;
+        
+            switch(caso){
+                case 1:
+                    carregarFuncionariosNome(nome);
+                    break;
+                case 2:
+                    carregarFuncionariosSalario(salario);
+                    break;
+                case 3:
+                    carregarFuncionariosNomeSalario(nome, salario);
+                    break;
+                default:
+                    carregarFuncionarios();           
+            }
     }//GEN-LAST:event_BT_Funcionario_BuscarActionPerformed
 
     private void BT_Funcionario_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Funcionario_CadastrarActionPerformed
-        // TODO add your handling code here:
+       
+        String nome = TF_Funci_Nome.getText();  // Assumindo que o TF_Funci_Nome é o campo para o Nome
+        String salario = TF_Funci_Salario.getText(); // Assumindo que o TF_Funci_Salario é o campo para a Salario
+    
+        try{
+            if(nome.isEmpty() || salario.isEmpty()){
+                throw new CamposNaoInformados();
+            }
+            else if (nome.length()>50){
+                throw new NomeGrande();
+            }
+            
+            
+            new DAO_Funcionario().CadastrarFuncionario(new Funcionario(nome, Float.parseFloat(salario)));
+            carregarFuncionariosSalarios_MIN_MAX_AVG();
+       
+        
+            int id = new DAO_General().ReturnLastCod("Funcionario");
+        
+            //Centro temp = new Centro();
+            //temp = new DAO_Centro().BuscarCentro(id); 
+        
+            DefaultTableModel Table_Funcionario = (DefaultTableModel)TB_Funcionario.getModel();
+            Object[] data = {id, nome, salario};
+            Table_Funcionario.addRow(data);
+            
+            TF_Funci_Nome.setText("");
+            TF_Funci_Salario.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Funcionario cadastrado com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "O Formato do Salário é inválido!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(NomeGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+        
+        
     }//GEN-LAST:event_BT_Funcionario_CadastrarActionPerformed
 
     private void BT_Funcionario_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Funcionario_RemoverActionPerformed
-        // TODO add your handling code here:
+       
+        //Testa se tem alguma linha selecionada
+        if(TB_Funcionario.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Funcionario = (DefaultTableModel)TB_Funcionario.getModel();
+            Table_Funcionario.removeRow(TB_Funcionario.getSelectedRow());
+           
+            new DAO_Funcionario().RemoverFuncionario(id);
+            
+            carregarFuncionariosSalarios_MIN_MAX_AVG();
+            TF_Funci_Nome.setText("");
+            TF_Funci_Salario.setText("");
+            JOptionPane.showMessageDialog(null, "Funcionario removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE); 
     }//GEN-LAST:event_BT_Funcionario_RemoverActionPerformed
 
     private void BT_Funcionario_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Funcionario_EditarActionPerformed
-        // TODO add your handling code here:
+        
+        try{
+            //System.out.println(TB_Centro.getSelectedRow());
+            if(TB_Funcionario.getSelectedRow()==-1){
+                throw new LinhaNaoSelecionada();
+            }
+            else{
+                String nomeNew = TF_Funci_Nome.getText();
+                String salarioNew = TF_Funci_Salario.getText();
+                String nomeOld = (String) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(),1);
+                String salarioOld = (String) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(),2);
+                int codigo = (int) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(),0);
+                
+                //Testa se tem alguma informação nos campos
+                if(nomeNew.isEmpty() || salarioNew.isEmpty()){
+                    throw new CamposNaoInformados();
+                }
+            
+
+            
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                if(nomeNew.equals(nomeOld) && salarioNew.equals(salarioOld)){
+                    throw new CentroEdicaoIgual();       
+                }
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(!nomeNew.equals(nomeOld)){
+                        new DAO_Funcionario().EditarNome(codigo, nomeNew); 
+                        TB_Funcionario.setValueAt(nomeNew, TB_Funcionario.getSelectedRow(), 1);
+                    }
+                
+                    //testa se a sigla fornecida é diferente da já cadastrada
+                    if(!salarioNew.equals(salarioOld)){
+                        new DAO_Funcionario().EditarSalario(codigo, Float.parseFloat(salarioNew)); 
+                        TB_Funcionario.setValueAt(salarioNew, TB_Funcionario.getSelectedRow(), 2);
+                    }
+                
+                    
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Funci_Nome.setText("");
+                    TF_Funci_Salario.setText("");
+
+                }
+            
+            }
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(LinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "O Formato do Salário é inválido!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
     }//GEN-LAST:event_BT_Funcionario_EditarActionPerformed
 
     private void BT_Autor_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Autor_BuscarActionPerformed
-        // TODO add your handling code here:
+       String nome = TF_Autor_Nome.getText();
+        String Pais = TF_Autor_Pais.getText();
+        int caso = 0;
+        
+            if(!nome.isEmpty() && Pais.isEmpty())
+                caso = 1;
+            else if(nome.isEmpty() && !Pais.isEmpty())
+                caso = 2;
+            else if(!nome.isEmpty() && !Pais.isEmpty())
+                caso = 3;
+        
+            switch(caso){
+                case 1:
+                    carregarAutorNome(nome);
+                    break;
+                case 2:
+                    carregarAutorPais(Pais);
+                    break;
+                case 3:
+                    carregarAutorNomePais(nome, Pais);
+                    break;
+                default:
+                    carregarAutores();           
+            }
     }//GEN-LAST:event_BT_Autor_BuscarActionPerformed
 
     private void BT_Autor_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Autor_CadastrarActionPerformed
-        // TODO add your handling code here:
+        String nome = TF_Autor_Nome.getText();  
+        String pais = TF_Autor_Pais.getText();
+    
+        try{
+            if(nome.isEmpty() || pais.isEmpty()){
+                throw new CamposNaoInformados();
+            }
+            else if (nome.length()>50){
+                throw new NomeGrande();
+                
+            }else if (pais.length()>50){
+                throw new NomeGrande();
+                
+            }
+            
+            
+            new DAO_Autor().CadastrarAutor(new Autor(nome, pais));
+       
+        
+            int id = new DAO_General().ReturnLastCod("Autor");
+        
+            //Centro temp = new Centro();
+            //temp = new DAO_Centro().BuscarCentro(id); 
+        
+            DefaultTableModel Table_Autor = (DefaultTableModel)TB_Autor.getModel();
+            Object[] data = {id, nome, pais};
+            Table_Autor.addRow(data);
+            
+            TF_Autor_Nome.setText("");
+            TF_Autor_Pais.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Autor cadastrado com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(NomeGrande e){
+            JOptionPane.showMessageDialog(null, "Os campos podem ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_BT_Autor_CadastrarActionPerformed
 
     private void BT_Autor_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Autor_RemoverActionPerformed
-        // TODO add your handling code here:
+        //Testa se tem alguma linha selecionada
+        if(TB_Autor.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Autor.getValueAt(TB_Autor.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Autor = (DefaultTableModel)TB_Autor.getModel();
+            Table_Autor.removeRow(TB_Autor.getSelectedRow());
+           
+            new DAO_Autor().RemoverAutor(id);
+            
+            TF_Autor_Nome.setText("");
+            TF_Autor_Pais.setText("");
+            JOptionPane.showMessageDialog(null, "Autor removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_BT_Autor_RemoverActionPerformed
 
     private void BT_Autor_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Autor_EditarActionPerformed
-        // TODO add your handling code here:
+        try{
+            //System.out.println(TB_Centro.getSelectedRow());
+            if(TB_Autor.getSelectedRow()==-1){
+                throw new LinhaNaoSelecionada();
+            }
+            else{
+                String nomeNew = TF_Autor_Nome.getText();
+                String paisNew = TF_Autor_Pais.getText();
+                String nomeOld = (String) TB_Autor.getValueAt(TB_Autor.getSelectedRow(),1);
+                String paisOld = (String) TB_Autor.getValueAt(TB_Autor.getSelectedRow(),2);
+                int codigo = (int) TB_Autor.getValueAt(TB_Autor.getSelectedRow(),0);
+                
+                //Testa se tem alguma informação nos campos
+                if(nomeNew.isEmpty() || paisNew.isEmpty()){
+                    throw new CamposNaoInformados();
+                }
+            
+
+            
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                if(nomeNew.equals(nomeOld) && paisNew.equals(paisOld)){
+                    throw new CentroEdicaoIgual();       
+                }
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(!nomeNew.equals(nomeOld)){
+                        new DAO_Autor().EditarNome(codigo, nomeNew); 
+                        TB_Autor.setValueAt(nomeNew, TB_Autor.getSelectedRow(), 1);
+                    }
+                
+                    //testa se a sigla fornecida é diferente da já cadastrada
+                    if(!paisNew.equals(paisOld)){
+                        new DAO_Autor().EditarPais(codigo, paisNew); 
+                        TB_Autor.setValueAt(paisNew, TB_Autor.getSelectedRow(), 2);
+                    }
+                
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Autor_Nome.setText("");
+                    TF_Autor_Pais.setText("");
+
+                }
+            
+            }
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, informe algum campo para editar.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(LinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "O Formato do Salário é inválido!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_BT_Autor_EditarActionPerformed
 
     private void TB_AlunoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_AlunoMouseClicked
@@ -2361,6 +3221,101 @@ public class main extends javax.swing.JFrame {
         TF_Aluno_Endereco.setText((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 3));
         Itens_Aluno_Centro.setSelectedItem((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 2));
     }//GEN-LAST:event_TB_AlunoMouseClicked
+
+    private void TB_PublicacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_PublicacaoMouseClicked
+        
+        int linha = TB_Publicacao.getSelectedRow();
+    
+        String tipo = String.valueOf(TB_Publicacao.getValueAt(linha, 4));
+        
+        int id = Integer.parseInt(TB_Publicacao.getValueAt(linha, 0).toString());
+        System.out.println(id);
+        
+        if(tipo.equals("Acadêmico")){
+            Academico temp = new DAO_Publicacao().BuscarAcademico(id);
+            String mensagem = String.format("Área: %s \n Edição: %s", temp.getArea(), temp.getEdicao());         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Academico.setSelected(true);
+            TF_Pub_Edicao.setEnabled(true);
+            TF_Pub_Area.setEnabled(true);
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Edicao.setText(String.valueOf(temp.getEdicao()));
+            TF_Pub_Area.setText(temp.getArea());
+        }
+        else if(tipo.equals("Literatura")){
+            String temp = new DAO_Publicacao().BuscarLiteratura(id);
+            String mensagem = String.format("Gênero Textual: %s", temp);         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Literatura.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(true);
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Genero.setText(temp);
+        }
+        else if(tipo.equals("Autoajuda")){
+            String temp = new DAO_Publicacao().BuscarAutoajuda(id);
+            String mensagem = String.format("Assunto: %s", temp);         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Autoajuda.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(true);
+            TF_Pub_Assunto.setText(temp);
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Genero.setText(temp);
+        }
+        else{
+            CheckBox_Outro.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(true);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Tipo.setText((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4));
+        }
+            
+        
+        TF_Pub_Nome.setText(tipo);
+        
+        TF_Pub_Nome.setText((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 1));
+        TF_Pub_Ano.setText(String.valueOf(TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 2)));
+        Itens_Pub_Biblioteca.setSelectedItem((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 3));
+        
+
+        
+        
+    }//GEN-LAST:event_TB_PublicacaoMouseClicked
+
+    private void TB_FuncionarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_FuncionarioMouseClicked
+        TF_Funci_Nome.setText((String) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(), 1));
+        TF_Funci_Salario.setText((String) TB_Funcionario.getValueAt(TB_Funcionario.getSelectedRow(), 2));
+    }//GEN-LAST:event_TB_FuncionarioMouseClicked
+
+    private void TB_AutorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_AutorMouseClicked
+        TF_Autor_Nome.setText((String) TB_Autor.getValueAt(TB_Autor.getSelectedRow(), 1));
+        TF_Autor_Pais.setText((String) TB_Autor.getValueAt(TB_Autor.getSelectedRow(), 2));
+    }//GEN-LAST:event_TB_AutorMouseClicked
 
     /**
      * @param args the command line arguments
@@ -2468,6 +3423,9 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTextField TF_Pub_Nome;
     private javax.swing.JTextField TF_Pub_Tipo;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
+    private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2486,6 +3444,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import Entitys.Autor;
 import biblioteca.SQL_connection;
+import java.sql.Statement;
 
 public class DAO_Autor {
 
@@ -26,6 +27,52 @@ public class DAO_Autor {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void EditarNome(int codigo, String nome){
+        
+        String SQL_command = "UPDATE Autor SET Nome=? where Cod_Autor=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setString(1, nome);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
+    public void EditarPais(int codigo, String pais){
+        
+        String SQL_command = "UPDATE Autor SET Pais=? where Cod_Autor=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setString(1, pais);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
     }
 
     public Autor BuscarAutor(int Cod_Autor) {

@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import Entitys.Funcionario;
 import biblioteca.SQL_connection;
+import java.sql.Statement;
+
 
 public class DAO_Funcionario {
 
@@ -16,7 +18,7 @@ public class DAO_Funcionario {
             ps = SQL_connection.getConnection().prepareStatement(SQL_command);
             ps.setInt(1, funcionario.getCod_Funcionario());
             
-            ps.setBigDecimal(2, funcionario.getSalario());  
+            ps.setFloat(2, funcionario.getSalario());  
             
             ps.setString(3, funcionario.getNome());
             ps.execute();
@@ -39,7 +41,7 @@ public class DAO_Funcionario {
 
             if(rs.next()) {
                 funcionario.setCod_Funcionario(rs.getInt("Cod_Funcionario"));
-                funcionario.setSalario(rs.getBigDecimal("Salario"));
+                funcionario.setSalario(rs.getFloat("Salario"));
                 funcionario.setNome(rs.getString("Nome"));
             } 
         } catch (SQLException e) {
@@ -74,5 +76,51 @@ public class DAO_Funcionario {
                 e.printStackTrace();
             }
         }
+    }
+    
+    public void EditarNome(int codigo, String nome){
+        
+        String SQL_command = "UPDATE Funcionario SET Nome=? where Cod_Funcionario=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setString(1, nome);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
+    }
+    
+    public void EditarSalario(int codigo, float salario){
+        
+        String SQL_command = "UPDATE Funcionario SET Salario=? where Cod_Funcionario=?";
+	PreparedStatement ps = null;
+
+	try {
+	    ps = SQL_connection.getConnection().prepareStatement(SQL_command, Statement.RETURN_GENERATED_KEYS);
+	    ps.setFloat(1, salario);
+	    ps.setInt(2, codigo);
+
+	    ps.executeUpdate();  // Executa a inserção no banco
+
+	} catch (SQLException e) {
+	    e.printStackTrace();
+	} finally {
+	    try {
+	        if (ps != null) ps.close();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+            }
+	}
     }
 }

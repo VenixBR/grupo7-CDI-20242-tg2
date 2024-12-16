@@ -5,6 +5,13 @@ public class Autor {
     private int Cod_Autor;
     private String Nome;
     private String Pais;
+    
+    public Autor(){};
+    
+    public Autor(String Nome, String Pais){
+        this.Nome = Nome;
+        this.Pais = Pais;
+    }
 
     public int getCod_Autor() {
         return Cod_Autor;

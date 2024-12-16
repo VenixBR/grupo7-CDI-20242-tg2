@@ -1,12 +1,17 @@
 package Entitys;
 
-import java.math.BigDecimal;
-
 public class Funcionario {
 
     private int Cod_Funcionario;
-    private BigDecimal Salario;
+    private Float Salario;
     private String Nome;
+    
+    public Funcionario(){};
+    
+    public Funcionario(String Nome, Float Salario){
+        this.Nome = Nome;
+        this.Salario = Salario;
+    }
 
     public int getCod_Funcionario() {
         return Cod_Funcionario;
@@ -16,7 +21,7 @@ public class Funcionario {
         return Nome;
     }
 
-    public BigDecimal getSalario() {
+    public Float getSalario() {
         return Salario;
     }
 
@@ -28,7 +33,7 @@ public class Funcionario {
         Nome = nome;
     }
 
-    public void setSalario(BigDecimal salario) {
+    public void setSalario(Float salario) {
         Salario = salario;
     }
 }

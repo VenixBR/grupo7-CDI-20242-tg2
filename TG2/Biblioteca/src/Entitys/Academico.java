@@ -5,6 +5,14 @@ public class Academico {
     private int Edicao;
     private String Area;
     private int fk_Cod_Publicacao;
+    
+    public Academico(){}
+    
+    public Academico(int edicao, String area, int cod_pub){
+        Edicao = edicao;
+        Area = area;
+        fk_Cod_Publicacao = cod_pub;
+    }
 
     public String getArea() {
         return Area;

@@ -87,4 +87,39 @@ public class DAO_Biblioteca{
         }
     }
     
+    public static int PullBiblioteca(String sigla){
+        
+        int result = -1;
+        String SQL_command = "SELECT Cod_Biblioteca AS Codigo FROM Biblioteca WHERE Sigla=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setString(1, sigla);
+            rs = ps.executeQuery();
+           
+            
+        if(rs.next()){
+            result = rs.getInt("Codigo");
+
+        }
+          
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return result;
+         
+    }
+    
+    
+    
 }
