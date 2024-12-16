@@ -19,7 +19,7 @@ CREATE TABLE Pertence (
 );
 
 CREATE TABLE Aluno (
-  Matricula INT PRIMARY KEY AUTO_INCREMENT,
+  Matricula INT PRIMARY KEY,
   Endereco VARCHAR(100) NOT NULL,
   Nome VARCHAR(50) NOT NULL,
   fk_Cod_Centro INT NOT NULL,
