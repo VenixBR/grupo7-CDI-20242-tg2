@@ -5,7 +5,9 @@
 package biblioteca;
 
 import DAOUser.DAO_Centro;
+import DAOUser.DAO_Aluno;
 import Entitys.Centro;
+import Entitys.Aluno;
 import Exceptions.CentroNomeGrande;
 import Exceptions.CentroSiglaGrande;
 import DAOUser.DAO_General;
@@ -166,9 +168,12 @@ public class main extends javax.swing.JFrame {
 	        if (conn == null || conn.isClosed()) {
 	            conectar(); 
 	        }
+                
+
 
 	        // Query SQL para buscar os dados dos alunos
-	        String query = "SELECT * FROM Aluno"; 
+	        //String query = "SELECT * FROM Aluno"; 
+                String query = "SELECT Aluno.matricula, Aluno.nome, Centro.sigla, Aluno.endereco FROM Aluno JOIN Centro ON Aluno.fk_cod_centro = Centro.cod_centro";
 	        Statement stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 
@@ -179,7 +184,7 @@ public class main extends javax.swing.JFrame {
 	            Object[] row = {
 	                rs.getInt("Matricula"),
 	                rs.getString("Nome"),
-	                rs.getInt("fk_Cod_Centro"),
+	                rs.getString("Sigla"),
 	                rs.getString("Endereco")
 	            };
 	            model.addRow(row);
@@ -707,6 +712,11 @@ public class main extends javax.swing.JFrame {
                 "Matricula", "Nome", "Centro", "Endereço"
             }
         ));
+        TB_Aluno.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_AlunoMouseClicked(evt);
+            }
+        });
         jScrollPane6.setViewportView(TB_Aluno);
         if (TB_Aluno.getColumnModel().getColumnCount() > 0) {
             TB_Aluno.getColumnModel().getColumn(0).setPreferredWidth(100);
@@ -1710,11 +1720,11 @@ public class main extends javax.swing.JFrame {
            
             new DAO_Centro().RemoverCentro(id);
             
-            String nome = TF_Centro_Nome.getText();
+            String sigla = TF_Centro_Sigla.getText();
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
-            Itens_Aluno_Centro.removeItem(nome);
-            Itens_Bib_Centro.removeItem(nome);
+            Itens_Aluno_Centro.removeItem(sigla);
+            Itens_Bib_Centro.removeItem(sigla);
             JOptionPane.showMessageDialog(null, "Centro removido com sucesso.", 
                                               "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }    
@@ -1852,13 +1862,88 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Aluno_BuscarActionPerformed
 
     private void BT_Aluno_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_CadastrarActionPerformed
-       
+         
+        String nome = TF_Aluno_Nome.getText(); 
+        String endereco = TF_Aluno_Endereco.getText(); 
+        String centro = (String)Itens_Aluno_Centro.getSelectedItem();
+        String matricula = TF_Aluno_Matricula.getText();
+    
+        try{
+            if(nome.isEmpty() || endereco.isEmpty() || matricula.isEmpty()){
+                throw new CentroCamposNaoInformados();
+            }
+            else if (nome.length()>50){
+                throw new CentroSiglaGrande();
+            }
+            else if (endereco.length()>100){
+                throw new CentroNomeGrande();
+            }
+            else if(DAO_Aluno.TestaMatricula(TF_Centro_Sigla.getText()) == true){
+                throw new CentroSiglaUsada();
+            }
+            
+            new DAO_Aluno().CadastrarAluno(new Aluno(Integer.parseInt(matricula), endereco, nome, DAO_Aluno.PullCentro(centro)));
+          
+            DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Aluno.getModel();
+            Object[] data = {matricula, nome, centro, endereco};
+            Table_Aluno.addRow(data);
+            
+            Itens_Empres_Aluno.addItem(nome);
+            
+            TF_Aluno_Nome.setText("");
+            TF_Aluno_Matricula.setText("");
+            TF_Aluno_Endereco.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Aluno cadastrado com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(CentroSiglaGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroNomeGrande e){
+            JOptionPane.showMessageDialog(null, "O endereco pode ter no máximo 100 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroCamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A matricula informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
         
         
     }//GEN-LAST:event_BT_Aluno_CadastrarActionPerformed
 
     private void BT_Aluno_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_RemoverActionPerformed
-        // TODO add your handling code here:
+        
+        //Testa se tem alguma linha selecionada
+        if(TB_Aluno.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Aluno.getModel();
+            Table_Aluno.removeRow(TB_Aluno.getSelectedRow());
+           
+            new DAO_Aluno().RemoverAluno(id);
+            
+            String nome = TF_Aluno_Nome.getText();
+            TF_Aluno_Nome.setText("");
+            TF_Aluno_Matricula.setText("");
+            TF_Aluno_Endereco.setText("");
+            Itens_Empres_Aluno.removeItem(nome);
+            JOptionPane.showMessageDialog(null, "Aluno removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        
+        
     }//GEN-LAST:event_BT_Aluno_RemoverActionPerformed
 
     private void BT_Publicacao_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Publicacao_EditarActionPerformed
@@ -1940,6 +2025,13 @@ public class main extends javax.swing.JFrame {
     private void BT_Autor_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Autor_EditarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_BT_Autor_EditarActionPerformed
+
+    private void TB_AlunoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_AlunoMouseClicked
+        TF_Aluno_Nome.setText((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 1));
+        TF_Aluno_Matricula.setText(String.valueOf(TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 0)));
+        TF_Aluno_Endereco.setText((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 3));
+        Itens_Aluno_Centro.setSelectedItem((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 2));
+    }//GEN-LAST:event_TB_AlunoMouseClicked
 
     /**
      * @param args the command line arguments
