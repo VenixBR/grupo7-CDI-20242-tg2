@@ -35,6 +35,12 @@ public class main extends javax.swing.JFrame {
 	        conn = SQL_connection.getConnection(); // Estabelece a conexão com o banco
 	    }
 	}
+        
+        public void fecharConexao() throws SQLException {
+	    if (conn != null && !conn.isClosed()) {
+	        conn.close(); // 
+	    }
+	}
 
 	// Método para preencher a tabela com os centros
 	private void carregarCentros() {
@@ -53,6 +59,8 @@ public class main extends javax.swing.JFrame {
 	        while (rs.next()) {
 	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
 	            model.addRow(row);
+                    Itens_Aluno_Centro.addItem(rs.getString("Sigla"));
+                    Itens_Bib_Centro.addItem(rs.getString("Sigla"));
 	        }
 
 	        rs.close();
@@ -62,9 +70,7 @@ public class main extends javax.swing.JFrame {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    }
 	}
-        
-        
-        
+      
         // Método para preencher a tabela com os centros com o nome indicado
 	private void carregarCentrosNome(String nome) {
 	    try {
@@ -125,6 +131,7 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
         
+         // Método para preencher a tabela com os centros com o nome e sigla indicados
         private void carregarCentrosNomeSigla(String nome, String sigla) {
 	    try {
 	        if (conn == null || conn.isClosed()) {
@@ -153,18 +160,6 @@ public class main extends javax.swing.JFrame {
 	    }
 	}
         
-        
-        
-        
-        
-        
-
-	public void fecharConexao() throws SQLException {
-	    if (conn != null && !conn.isClosed()) {
-	        conn.close(); // 
-	    }
-	}
-
 	// Método para preencher a tabela com os alunos
 	private void carregarAlunos() {
 	    try {
@@ -188,6 +183,7 @@ public class main extends javax.swing.JFrame {
 	                rs.getString("Endereco")
 	            };
 	            model.addRow(row);
+                    Itens_Empres_Aluno.addItem(rs.getString("Nome"));
 	        }
 
 	        rs.close();
@@ -197,7 +193,34 @@ public class main extends javax.swing.JFrame {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados dos alunos: " + ex.getMessage());
 	    }
 	}
-	
+        
+        // Método para preencher a tabela com os centros com o nome indicado
+	private void carregarAlunosNome(String nome) {
+	    try {
+	        if (conn == null || conn.isClosed()) {
+	            conectar();
+	        }
+
+	        String query = "SELECT * FROM Aluno WHERE Nome=?"; 
+                PreparedStatement ps = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, nome);
+                ResultSet rs = ps.executeQuery();
+
+	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
+
+	        while (rs.next()) {
+	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
+	            model.addRow(row);
+	        }
+	        rs.close();
+                ps.close();
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+	}
+        
 	private void carregarPublicacoes() {
 	    String query = "SELECT p.Cod_Publicacao, p.Tipo, p.Ano, p.Nome, b.Sigla AS Biblioteca, " +
 	                   "a.Edicao, a.Area, " +
@@ -227,7 +250,7 @@ public class main extends javax.swing.JFrame {
 	            Object[] row = {
 	                rs.getInt("Cod_Publicacao"),  // Esta é uma coluna do tipo INT
 	                rs.getString("Nome"),         // Esta é uma coluna do tipo String
-	                rs.getDate("Ano"),            // Se "Ano" for uma coluna DATE, use rs.getDate() ao invés de rs.getInt()
+	                rs.getInt("Ano"),            // Se "Ano" for uma coluna DATE, use rs.getDate() ao invés de rs.getInt()
 	                rs.getString("Biblioteca"),   // Esta é uma coluna do tipo String
 	                rs.getString("Tipo"),         // Esta é uma coluna do tipo String
 	                rs.getInt("Edicao"),          // Esta é uma coluna do tipo INT
@@ -236,6 +259,7 @@ public class main extends javax.swing.JFrame {
 	                rs.getString("Assunto"),      // Esta é uma coluna do tipo String
 	            };
 	            model.addRow(row);  // Adiciona a linha à tabela
+                    Itens_Empres_Publicacao.addItem(rs.getString("Nome"));
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
@@ -315,6 +339,7 @@ public class main extends javax.swing.JFrame {
 	                rs.getString("Endereco")
 	            };
 	            model.addRow(row);
+                    Itens_Pub_Biblioteca.addItem(rs.getString("Sigla"));
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
@@ -354,6 +379,7 @@ public class main extends javax.swing.JFrame {
 	                rs.getBigDecimal("Salario")
 	            };
 	            model.addRow(row);
+                    Itens_Empres_Funcionario.addItem(rs.getString("Nome"));
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
@@ -701,8 +727,6 @@ public class main extends javax.swing.JFrame {
 
         jLabel22.setText("Matricula:");
 
-        Itens_Aluno_Centro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel21.setText("Centro:");
 
         BT_Aluno_Editar.setText("Editar");
@@ -820,8 +844,6 @@ public class main extends javax.swing.JFrame {
             TB_Publicacao.getColumnModel().getColumn(3).setPreferredWidth(40);
             TB_Publicacao.getColumnModel().getColumn(4).setPreferredWidth(100);
         }
-
-        Itens_Pub_Biblioteca.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jLabel15.setText("Biblioteca:");
 
@@ -1070,7 +1092,6 @@ public class main extends javax.swing.JFrame {
 
         jLabel39.setText("Sigla:");
 
-        Itens_Bib_Centro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         Itens_Bib_Centro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Itens_Bib_CentroActionPerformed(evt);
@@ -1203,15 +1224,9 @@ public class main extends javax.swing.JFrame {
 
         jLabel9.setText("Aluno");
 
-        Itens_Empres_Aluno.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel10.setText("Publicação:");
 
-        Itens_Empres_Funcionario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel11.setText("Funcionário:");
-
-        Itens_Empres_Publicacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         BT_Emprestimo_Buscar.setText("Buscar");
         BT_Emprestimo_Buscar.addActionListener(new java.awt.event.ActionListener() {
@@ -1581,17 +1596,20 @@ public class main extends javax.swing.JFrame {
         
             int id = new DAO_General().ReturnLastCod("Centro");
         
-            Centro temp = new Centro();
-            temp = new DAO_Centro().BuscarCentro(id); 
+            //Centro temp = new Centro();
+            //temp = new DAO_Centro().BuscarCentro(id); 
         
             DefaultTableModel Table_Centro = (DefaultTableModel)TB_Centro.getModel();
-            Object[] data = {temp.getCod_Centro(),  temp.getSigla(), temp.getNome()};
+            Object[] data = {id, sigla, nome};
             Table_Centro.addRow(data);
+            
+            Itens_Aluno_Centro.addItem(sigla);
+            Itens_Bib_Centro.addItem(sigla);
             
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
             
-            JOptionPane.showMessageDialog(null, "Centro cadastrado com sucessooooooo!", 
+            JOptionPane.showMessageDialog(null, "Centro cadastrado com sucesso!", 
                                               "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }
         catch(CentroSiglaGrande e){
@@ -1692,8 +1710,11 @@ public class main extends javax.swing.JFrame {
            
             new DAO_Centro().RemoverCentro(id);
             
+            String nome = TF_Centro_Nome.getText();
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
+            Itens_Aluno_Centro.removeItem(nome);
+            Itens_Bib_Centro.removeItem(nome);
             JOptionPane.showMessageDialog(null, "Centro removido com sucesso.", 
                                               "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }    
@@ -1831,7 +1852,9 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Aluno_BuscarActionPerformed
 
     private void BT_Aluno_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_CadastrarActionPerformed
-        // TODO add your handling code here:
+       
+        
+        
     }//GEN-LAST:event_BT_Aluno_CadastrarActionPerformed
 
     private void BT_Aluno_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Aluno_RemoverActionPerformed
