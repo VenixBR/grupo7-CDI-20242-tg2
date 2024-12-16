@@ -82,4 +82,72 @@ public class DAO_Aluno {
             }
         }
     }
+    
+    public static boolean TestaMatricula(String matricula){
+        
+        boolean flag = false;
+        String SQL_command = "SELECT COUNT(*) AS Result FROM Aluno WHERE Matricula=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setString(1, matricula);
+            rs = ps.executeQuery();
+           
+            
+        if(rs.next()){
+            if (rs.getInt("Result") > 0) {
+                flag = true;
+            }
+        }
+          
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return flag;
+         
+    }
+    
+    public static int PullCentro(String sigla){
+        
+        int result = -1;
+        String SQL_command = "SELECT Cod_Centro AS Codigo FROM Centro WHERE Sigla=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setString(1, sigla);
+            rs = ps.executeQuery();
+           
+            
+        if(rs.next()){
+            result = rs.getInt("Codigo");
+
+        }
+          
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return result;
+         
+    }
+    
 }
