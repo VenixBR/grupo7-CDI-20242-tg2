@@ -99,6 +99,16 @@ VALUES
   (08, 'Mark Twain', 'Estados Unidos'),
   (09, 'Machado de Assis', 'Brasil'),
   (10, 'Ernest Hemingway', 'Estados Unidos');
+  (11, 'Edgar Allan Poe', 'Estados Unidos'),
+  (12, 'Jorge Amado', 'Brasil'),
+  (13, 'Fernando Pessoa', 'Portugal'),
+  (14, 'Albert Camus', 'França'),
+  (15, 'Haruki Murakami', 'Japão'),
+  (16, 'Franz Kafka', 'Alemanha'),
+  (17, 'William Shakespeare', 'Reino Unido'),
+  (18, 'Virginia Woolf', 'Reino Unido'),
+  (19, 'Hermann Hesse', 'Alemanha'),
+  (20, 'José Saramago', 'Portugal');
 
 INSERT INTO Publicacao (Cod_Publicacao, Tipo, Ano, Nome, fk_Cod_Biblioteca)
 VALUES
@@ -109,6 +119,16 @@ VALUES
   (05, 'Autoajuda', '2022', 'O Poder do Hábito', 05),
   (06, 'Literatura', '2017', 'O Senhor dos Anéis', 06),
   (07, 'Acadêmico', '2020', 'Física para Engenheiros', 07);
+  (08, 'Literatura', '2016', '1984', 01),
+  (09, 'Autoajuda', '2023', 'Como Fazer Amigos e Influenciar Pessoas', 02),
+  (10, 'Acadêmico', '2021', 'Aprendizado de Máquina', 03),
+  (11, 'Acadêmico', '2018', 'Cálculo Diferencial e Integral', 04),
+  (12, 'Autoajuda', '2019', 'Mindset', 05),
+  (13, 'Literatura', '2022', 'Dom Casmurro', 06),
+  (14, 'Acadêmico', '2020', 'Estruturas de Dados', 07),
+  (15, 'Acadêmico', '2017', 'Introdução à Física Moderna', 08),
+  (16, 'Literatura', '2015', 'Grande Sertão: Veredas', 09),
+  (17, 'Autoajuda', '2020', 'Os Sete Hábitos das Pessoas Altamente Eficazes', 10);
 
 INSERT INTO Academico (Edicao, Area, fk_Cod_Publicacao)
 VALUES
@@ -119,16 +139,27 @@ VALUES
   (05, 'Psicologia', 05),
   (06, 'Ficção Fantástica', 06),
   (07, 'Física', 07);
+  (08, 'Filosofia', 10),
+  (09, 'Matemática Aplicada', 11),
+  (10, 'Psicologia', 12),
+  (11, 'Análise de Dados', 14),
+  (12, 'Física Quântica', 15);
 
 INSERT INTO Literatura (Genero_Textual, fk_Cod_Publicacao)
 VALUES
   ('Ficção Científica', 04),
   ('Romance', 06),
   ('Aventura', 07);
+  ('Drama', 08),
+  ('Biografia', 13),
+  ('Clássico', 16);
 
 INSERT INTO Autoajuda (Assunto, fk_Cod_Publicacao)
 VALUES
   ('Desenvolvimento Pessoal', 5);
+  ('Liderança', 9),
+  ('Mudança de Mentalidade', 12),
+  ('Produtividade', 17);
 
 INSERT INTO Escrito (fk_Cod_Publicacao, fk_Cod_Autor)
 VALUES
@@ -139,6 +170,16 @@ VALUES
   (05, 04),
   (06, 06),
   (07, 08);
+  (08, 02),
+  (09, 15),
+  (10, 03),
+  (11, 06),
+  (12, 01),
+  (13, 09),
+  (14, 18),
+  (15, 17),
+  (16, 09),
+  (17, 04);
 
 
 INSERT INTO Emprestimo (Cod_Emprestimo, Data_, Hora, fk_Cod_Publicacao, fk_Matricula, fk_Cod_Funcionario)
@@ -150,3 +191,11 @@ VALUES
   (05, '2024-02-21', '14:45:00', 5, 202220004, 05),
   (06, '2024-03-05', '09:30:00', 6, 202220005, 06),
   (07, '2024-03-10', '13:00:00', 7, 202220006, 07);
+  (08, '2024-03-15', '10:00:00', 8, 202220015, 08),
+  (09, '2024-03-16', '11:30:00', 9, 202220016, 09),
+  (10, '2024-03-17', '12:45:00', 10, 202220017, 10),
+  (11, '2024-03-18', '13:50:00', 11, 202220018, 11),
+  (12, '2024-03-19', '15:00:00', 12, 202220019, 12),
+  (13, '2024-03-20', '16:10:00', 13, 202220020, 13),
+  (14, '2024-03-21', '17:20:00', 14, 202220021, 14),
+  (15, '2024-03-22', '18:30:00', 15, 202220022, 15);
