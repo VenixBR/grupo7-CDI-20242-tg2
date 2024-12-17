@@ -48,6 +48,16 @@ VALUES
   (202220012, 'Rua da Paz', 'Marcelo Bielsa', 03),
   (202220013, 'Rua do Parque', 'Tite', 04),
   (202220014, 'Avenida do Mar', 'Luis Enrique', 05);
+  (202220015, 'Rua das Palmeiras', 'Jürgen Klopp', 06),
+  (202220016, 'Avenida dos Girassóis', 'Mauricio Pochettino', 05),
+  (202220017, 'Rua do Horizonte', 'Joachim Löw', 02),
+  (202220018, 'Avenida das Acácias', 'Didier Deschamps', 01),
+  (202220019, 'Rua Verde', 'Julian Nagelsmann', 08),
+  (202220020, 'Avenida da Amizade', 'Mano Menezes', 04),
+  (202220021, 'Rua do Futuro', 'Fernando Diniz', 03),
+  (202220022, 'Avenida Central', 'Abel Ferreira', 07),
+  (202220023, 'Rua das Hortênsias', 'Marcelo Gallardo', 02),
+  (202220024, 'Avenida das Nações', 'Rafael Benítez', 10);
 
 INSERT INTO Funcionario (Cod_Funcionario, Salario, Nome)
 VALUES
@@ -66,6 +76,16 @@ VALUES
   (13, '8800.45', 'Alan Patrick'),
   (14, '9250.00', 'Erling Haaland'),
   (15, '10050.60', 'Enner Valência');
+  (16, '10100.00', 'Casemiro'),
+  (17, '8800.70', 'Paul Pogba'),
+  (18, '9700.90', 'Andrés Iniesta'),
+  (19, '9200.55', 'Sadio Mané'),
+  (20, '8900.85', 'Gerard Piqué'),
+  (21, '9600.95', 'Marco Verratti'),
+  (22, '9400.50', 'Jordi Alba'),
+  (23, '9800.80', 'Phil Foden'),
+  (24, '10200.20', 'Raheem Sterling'),
+  (25, '8900.00', 'David Silva');
 
 INSERT INTO Autor (Cod_Autor, Nome, Pais)
 VALUES
