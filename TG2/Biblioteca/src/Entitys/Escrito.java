@@ -4,6 +4,13 @@ public class Escrito {
  
     private int fk_Cod_Publicacao;
     private int fk_Cod_Autor;
+    
+    public Escrito(){}
+    
+    public Escrito(int Cod_pub, int cod_autor){
+        fk_Cod_Publicacao = Cod_pub;
+        fk_Cod_Autor = cod_autor;
+    }
 
     public int getFk_Cod_Autor() {
         return fk_Cod_Autor;

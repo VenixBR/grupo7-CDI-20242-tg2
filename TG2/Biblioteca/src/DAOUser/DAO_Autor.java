@@ -29,6 +29,69 @@ public class DAO_Autor {
         }
     }
     
+     public void RemoverEscrito(int Cod_publicacao) {
+
+        String SQL_command = "DELETE FROM Escrito WHERE fk_Cod_Publicacao=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            
+            ps.setInt(1, Cod_publicacao);
+            
+            // Executa a consulta para remover a biblioteca
+            ps.executeUpdate();  // Aqui usamos executeUpdate() porque estamos fazendo uma operação de DELETE
+
+        } catch (SQLException e) {
+            e.printStackTrace();  
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    public static int PullAutor(String nome){
+        
+        int result = -1;
+        String SQL_command = "SELECT Cod_Autor AS Codigo FROM Autor WHERE Nome=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setString(1, nome);
+            rs = ps.executeQuery();
+           
+            
+        if(rs.next()){
+            result = rs.getInt("Codigo");
+
+        }
+          
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return result;
+         
+    }
+    
     public void EditarNome(int codigo, String nome){
         
         String SQL_command = "UPDATE Autor SET Nome=? where Cod_Autor=?";

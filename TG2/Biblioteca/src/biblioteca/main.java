@@ -29,6 +29,7 @@ import Exceptions.CentroSiglaGrande;
 import Exceptions.PubAnoGrande;
 import DAOUser.DAO_General;
 import Entitys.Emprestimo;
+import Entitys.Escrito;
 import Exceptions.CamposNaoInformados;
 import Exceptions.CentroEdicaoIgual;
 import Exceptions.LinhaNaoSelecionada;
@@ -41,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.text.ParseException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -69,6 +71,14 @@ public class main extends javax.swing.JFrame {
         public boolean BibCentroIsEmpty(){
             for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
                 if((Boolean)TB_Bib_Centros.getValueAt(i, 0) == true)
+                    return false;
+            }
+            return true;
+        }
+        
+        public boolean PubAutoresIsEmpty(){
+            for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                if((Boolean)TB_Pub_Autores.getValueAt(i, 0) == true)
                     return false;
             }
             return true;
@@ -461,7 +471,9 @@ public class main extends javax.swing.JFrame {
 	        rs = stmt.executeQuery(query); 
 
 	        DefaultTableModel model = (DefaultTableModel) TB_Autor.getModel();
+                DefaultTableModel model2 = (DefaultTableModel) TB_Pub_Autores.getModel();
 	        model.setRowCount(0);  
+                model2.setRowCount(0); 
 
 	        while (rs.next()) {
 	            Object[] row = {
@@ -469,7 +481,9 @@ public class main extends javax.swing.JFrame {
 	                rs.getString("Nome"),
 	                rs.getString("Pais")
 	            };
+                    Object[] row2 ={false,rs.getString("Nome")};
 	            model.addRow(row);
+                    model2.addRow(row2);
 	        }
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
@@ -903,7 +917,7 @@ public class main extends javax.swing.JFrame {
         BT_Publicacao_Cadastrar = new javax.swing.JButton();
         BT_Publicacao_Remover = new javax.swing.JButton();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        TB_Pub_Autores = new javax.swing.JTable();
         jLabel27 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -1329,12 +1343,9 @@ public class main extends javax.swing.JFrame {
             }
         });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        TB_Pub_Autores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "", "Autores"
@@ -1348,10 +1359,10 @@ public class main extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane9.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(30);
-            jTable2.getColumnModel().getColumn(1).setPreferredWidth(500);
+        jScrollPane9.setViewportView(TB_Pub_Autores);
+        if (TB_Pub_Autores.getColumnModel().getColumnCount() > 0) {
+            TB_Pub_Autores.getColumnModel().getColumn(0).setPreferredWidth(30);
+            TB_Pub_Autores.getColumnModel().getColumn(1).setPreferredWidth(500);
         }
 
         jLabel27.setText("Autores:");
@@ -2911,6 +2922,23 @@ public class main extends javax.swing.JFrame {
             }
             
             
+            if(!PubAutoresIsEmpty()){
+
+            for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                if((Boolean)TB_Pub_Autores.getValueAt(i, 0) == true){
+                    int temp = DAO_Autor.PullAutor((String)TB_Pub_Autores.getValueAt(i, 1));
+                    new DAO_Publicacao().CadastrarEscrito(new Escrito(cod, temp));
+                }
+            }
+   
+            }
+            
+            DefaultTableModel model = (DefaultTableModel) TB_Pub_Autores.getModel();
+            
+            for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                model.setValueAt(false, i, 0);   
+            }
+            
             
             Itens_Empres_Publicacao.addItem(nome);
             
@@ -2968,10 +2996,31 @@ public class main extends javax.swing.JFrame {
                 new DAO_Publicacao().RemoverAutoajuda(id);
             }
             
+            if(!PubAutoresIsEmpty()){
+
+            for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                //System.out.println((Boolean)TB_Bib_Centros.getValueAt(i, 0));
+                if((Boolean)TB_Pub_Autores.getValueAt(i, 0) == true){
+                    new DAO_Autor().RemoverEscrito(id);
+                }
+            }}
+            
+            
+            
+            
             new DAO_Publicacao().RemoverPublicacao(id);
             Table_Aluno.removeRow(TB_Publicacao.getSelectedRow());
             
             String nome = TF_Pub_Nome.getText();
+            
+            DefaultTableModel model = (DefaultTableModel) TB_Pub_Autores.getModel();
+            
+            for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                model.setValueAt(false, i, 0);   
+            }
+            
+            
+            
             TF_Pub_Nome.setText("");
             TF_Pub_Ano.setText("");
             TF_Pub_Edicao.setText("");
@@ -3020,7 +3069,7 @@ public class main extends javax.swing.JFrame {
             int id = new DAO_General().ReturnLastCod("Biblioteca");
           
             DefaultTableModel Table_Biblioteca = (DefaultTableModel)TB_Biblioteca.getModel();
-            Object[] data = {id, nome,sigla, endereco};
+            Object[] data = {id, sigla, nome, endereco};
             Table_Biblioteca.addRow(data);
             
             
@@ -3036,6 +3085,11 @@ public class main extends javax.swing.JFrame {
    
             }
             
+            DefaultTableModel model = (DefaultTableModel) TB_Bib_Centros.getModel();
+            
+            for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                model.setValueAt(false, i, 0);   
+            }
             
             
             
@@ -3075,15 +3129,27 @@ public class main extends javax.swing.JFrame {
             //Pega o codigo da linha selecionada
             int id = (int) TB_Biblioteca.getValueAt(TB_Biblioteca.getSelectedRow(), 0);
             
+            
+            if(!BibCentroIsEmpty()){
+
+            for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                System.out.println((Boolean)TB_Bib_Centros.getValueAt(i, 0));
+                if((Boolean)TB_Bib_Centros.getValueAt(i, 0) == true){
+                    new DAO_Biblioteca().RemoverPertence(id);
+                }
+            }}
+            
+            new DAO_Biblioteca().RemoverBiblioteca(id);
+
             DefaultTableModel Table_Biblioteca = (DefaultTableModel)TB_Biblioteca.getModel();
             Table_Biblioteca.removeRow(TB_Biblioteca.getSelectedRow());
             
-            if(!BibCentroIsEmpty()){
-                new DAO_Biblioteca().RemoverPertence(id);
+            DefaultTableModel model = (DefaultTableModel) TB_Bib_Centros.getModel();
+            
+            for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                model.setValueAt(false, i, 0);   
             }
-            System.out.println(id);
-            new DAO_Biblioteca().RemoverBiblioteca(id);
-            System.out.println("oi1");
+            
             
             String nome = TF_Bib_Nome.getText();
             TF_Bib_Nome.setText("");
@@ -3593,7 +3659,7 @@ public class main extends javax.swing.JFrame {
         TF_Aluno_Nome.setText((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 1));
         TF_Aluno_Matricula.setText(String.valueOf(TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 0)));
         TF_Aluno_Endereco.setText((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 3));
-        Itens_Aluno_Centro.setSelectedItem((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 2));
+        Itens_Aluno_Centro.setSelectedItem((String) TB_Aluno.getValueAt(TB_Aluno.getSelectedRow(), 2));    
     }//GEN-LAST:event_TB_AlunoMouseClicked
 
     private void TB_PublicacaoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_PublicacaoMouseClicked
@@ -3669,6 +3735,48 @@ public class main extends javax.swing.JFrame {
             TF_Pub_Tipo.setText("");            
             TF_Pub_Tipo.setText((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4));
         }
+        
+        int fk = (int)TB_Publicacao.getValueAt(linha, 0);
+        
+        try {
+	        //String query = "SELECT * FROM Pertence where fk_Cod_Biblioteca=?"; 
+                
+                String query = "select distinct c.nome from Escrito join Autor c ON c.Cod_Autor=fk_Cod_Autor where fk_Cod_Publicacao=?";
+                
+                
+                
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, fk);
+                rs = ps.executeQuery();
+                
+	        DefaultTableModel model = (DefaultTableModel) TB_Pub_Autores.getModel();
+                
+                for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                            model.setValueAt(false, i, 0);
+                    }
+                
+
+	        while (rs.next()) {
+
+                    for(int i=0 ; i<TB_Pub_Autores.getRowCount(); i++){
+                       // System.out.println(rs.getString("Nome"));
+                        if((Boolean)TB_Pub_Autores.getValueAt(i, 1).equals(rs.getString("Nome"))){
+                            model.setValueAt(true, i, 0);
+                        }
+                    }
+                   
+	        }
+
+	        rs.close();
+	        ps.close();
+
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+        
+        
             
         
         TF_Pub_Nome.setText(tipo);
@@ -3707,7 +3815,7 @@ public class main extends javax.swing.JFrame {
         try {
 	        //String query = "SELECT * FROM Pertence where fk_Cod_Biblioteca=?"; 
                 
-                String query = "select c.sigla from Pertence join Centro c ON c.Cod_Centro=fk_Cod_centro where fk_Cod_Centro=?";
+                String query = "select distinct c.sigla from Pertence join Centro c ON c.Cod_Centro=fk_Cod_centro where fk_Cod_Biblioteca=?";
                 
                 
                 
@@ -3865,6 +3973,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JTable TB_Centro;
     private javax.swing.JTable TB_Emprestimo;
     private javax.swing.JTable TB_Funcionario;
+    private javax.swing.JTable TB_Pub_Autores;
     private javax.swing.JTable TB_Publicacao;
     private javax.swing.JTextField TF_Aluno_Endereco;
     private javax.swing.JTextField TF_Aluno_Matricula;
@@ -3939,6 +4048,5 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }
