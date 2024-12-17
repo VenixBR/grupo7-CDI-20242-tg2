@@ -3669,72 +3669,9 @@ public class main extends javax.swing.JFrame {
         String tipo = String.valueOf(TB_Publicacao.getValueAt(linha, 4));
         
         int id = (int) TB_Publicacao.getValueAt(linha, 0);
-        System.out.println(id);
         
-        if(tipo.equals("Acadêmico")){
-            Academico temp = new DAO_Publicacao().BuscarAcademico(id);
-            System.out.println(temp==null);
-            String mensagem = String.format("Área: %s \n Edição: %s", temp.getArea(), temp.getEdicao());         
-            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
-            CheckBox_Academico.setSelected(true);
-            TF_Pub_Edicao.setEnabled(true);
-            TF_Pub_Area.setEnabled(true);
-            TF_Pub_Genero.setEnabled(false);
-            TF_Pub_Genero.setText("");
-            TF_Pub_Assunto.setEnabled(false);
-            TF_Pub_Assunto.setText("");
-            TF_Pub_Tipo.setEnabled(false);
-            TF_Pub_Tipo.setText("");            
-            TF_Pub_Edicao.setText(String.valueOf(temp.getEdicao()));
-            TF_Pub_Area.setText(temp.getArea());
-        }
-        else if(tipo.equals("Literatura")){
-            String temp = new DAO_Publicacao().BuscarLiteratura(id);
-            String mensagem = String.format("Gênero Textual: %s", temp);         
-            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
-            CheckBox_Literatura.setSelected(true);
-            TF_Pub_Edicao.setEnabled(false);
-            TF_Pub_Edicao.setText("");
-            TF_Pub_Area.setEnabled(false);
-            TF_Pub_Area.setText("");
-            TF_Pub_Genero.setEnabled(true);
-            TF_Pub_Assunto.setEnabled(false);
-            TF_Pub_Assunto.setText("");
-            TF_Pub_Tipo.setEnabled(false);
-            TF_Pub_Tipo.setText("");            
-            TF_Pub_Genero.setText(temp);
-        }
-        else if(tipo.equals("Autoajuda")){
-            String temp = new DAO_Publicacao().BuscarAutoajuda(id);
-            String mensagem = String.format("Assunto: %s", temp);         
-            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
-            CheckBox_Autoajuda.setSelected(true);
-            TF_Pub_Edicao.setEnabled(false);
-            TF_Pub_Edicao.setText("");
-            TF_Pub_Area.setEnabled(false);
-            TF_Pub_Area.setText("");
-            TF_Pub_Genero.setEnabled(false);
-            TF_Pub_Genero.setText("");
-            TF_Pub_Assunto.setEnabled(true);
-            TF_Pub_Assunto.setText(temp);
-            TF_Pub_Tipo.setEnabled(false);
-            TF_Pub_Tipo.setText("");            
-            TF_Pub_Genero.setText(temp);
-        }
-        else{
-            CheckBox_Outro.setSelected(true);
-            TF_Pub_Edicao.setEnabled(false);
-            TF_Pub_Edicao.setText("");
-            TF_Pub_Area.setEnabled(false);
-            TF_Pub_Area.setText("");
-            TF_Pub_Genero.setEnabled(false);
-            TF_Pub_Genero.setText("");
-            TF_Pub_Assunto.setEnabled(false);
-            TF_Pub_Assunto.setText("");
-            TF_Pub_Tipo.setEnabled(true);
-            TF_Pub_Tipo.setText("");            
-            TF_Pub_Tipo.setText((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4));
-        }
+        String mensagem = "Autores: \n";
+      
         
         int fk = (int)TB_Publicacao.getValueAt(linha, 0);
         
@@ -3764,10 +3701,79 @@ public class main extends javax.swing.JFrame {
                        // System.out.println(rs.getString("Nome"));
                         if((Boolean)TB_Pub_Autores.getValueAt(i, 1).equals(rs.getString("Nome"))){
                             model.setValueAt(true, i, 0);
+                            mensagem += rs.getString("Nome") + "\n";
                         }
                     }
                    
 	        }
+                
+                
+                if(tipo.equals("Acadêmico")){
+            Academico temp = new DAO_Publicacao().BuscarAcademico(id);
+            mensagem += "\nÁrea: " +  temp.getArea() + "\n\nEdição: " + temp.getEdicao();         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Academico.setSelected(true);
+            TF_Pub_Edicao.setEnabled(true);
+            TF_Pub_Area.setEnabled(true);
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Edicao.setText(String.valueOf(temp.getEdicao()));
+            TF_Pub_Area.setText(temp.getArea());
+        }
+        else if(tipo.equals("Literatura")){
+            String temp = new DAO_Publicacao().BuscarLiteratura(id);
+            mensagem +="\nGênero Textual: " + temp +"\n\n";         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Literatura.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(true);
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Genero.setText(temp);
+        }
+        else if(tipo.equals("Autoajuda")){
+            String temp = new DAO_Publicacao().BuscarAutoajuda(id);
+            mensagem += "\nAssunto: " + temp + "\n\n";         
+            JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
+            CheckBox_Autoajuda.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(true);
+            TF_Pub_Assunto.setText(temp);
+            TF_Pub_Tipo.setEnabled(false);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Genero.setText(temp);
+        }
+        else{
+            CheckBox_Outro.setSelected(true);
+            TF_Pub_Edicao.setEnabled(false);
+            TF_Pub_Edicao.setText("");
+            TF_Pub_Area.setEnabled(false);
+            TF_Pub_Area.setText("");
+            TF_Pub_Genero.setEnabled(false);
+            TF_Pub_Genero.setText("");
+            TF_Pub_Assunto.setEnabled(false);
+            TF_Pub_Assunto.setText("");
+            TF_Pub_Tipo.setEnabled(true);
+            TF_Pub_Tipo.setText("");            
+            TF_Pub_Tipo.setText((String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4));
+        }
+                
+                
+                
 
 	        rs.close();
 	        ps.close();
