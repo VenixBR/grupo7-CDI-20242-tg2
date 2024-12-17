@@ -6,6 +6,14 @@ public class Biblioteca {
     private String Endereco;
     private String Nome;
     private String Sigla;
+    
+    public Biblioteca(){}
+    
+    public Biblioteca(String endereco, String nome, String sigla){
+        Nome = nome;
+        Endereco = endereco;
+        Sigla = sigla;
+    }
 
     public int getCod_Biblioteca() {
         return Cod_Biblioteca;

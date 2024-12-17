@@ -4,6 +4,13 @@ public class Pertence {
 
     private int fk_Cod_Biblioteca;
     private int fk_Cod_Centro;
+    
+    public Pertence(){}
+    
+    public Pertence(int cod_bib, int cod_centro){
+        fk_Cod_Biblioteca = cod_bib;
+        fk_Cod_Centro = cod_centro;
+    }
 
     public int getFk_Cod_Biblioteca() {
         return fk_Cod_Biblioteca;

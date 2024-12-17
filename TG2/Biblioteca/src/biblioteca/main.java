@@ -10,6 +10,10 @@ import DAOUser.DAO_Publicacao;
 import DAOUser.DAO_Biblioteca;
 import DAOUser.DAO_Funcionario;
 import DAOUser.DAO_Autor;
+import DAOUser.DAO_Emprestimo;
+import static DAOUser.DAO_Emprestimo.PullAluno;
+import static DAOUser.DAO_Emprestimo.PullFuncionario;
+import static DAOUser.DAO_Emprestimo.PullPublicacao;
 import Entitys.Centro;
 import Entitys.Aluno;
 import Entitys.Academico;
@@ -17,21 +21,28 @@ import Entitys.Autor;
 import Entitys.Literatura;
 import Entitys.Autoajuda;
 import Entitys.Publicacao;
+import Entitys.Pertence;
 import Entitys.Funcionario;
+import Entitys.Biblioteca;
 import Exceptions.NomeGrande;
 import Exceptions.CentroSiglaGrande;
 import Exceptions.PubAnoGrande;
 import DAOUser.DAO_General;
+import Entitys.Emprestimo;
 import Exceptions.CamposNaoInformados;
 import Exceptions.CentroEdicaoIgual;
 import Exceptions.LinhaNaoSelecionada;
 import Exceptions.CentroSiglaUsada;
+import java.sql.Date;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author desenvolvimento
@@ -54,6 +65,64 @@ public class main extends javax.swing.JFrame {
 	        conn.close(); // 
 	    }
 	}
+        
+        public boolean BibCentroIsEmpty(){
+            for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                if((Boolean)TB_Bib_Centros.getValueAt(i, 0) == true)
+                    return false;
+            }
+            return true;
+        }
+        
+        private static boolean validarData(String data) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false); // Impede datas inválidas, como 31/02/2023
+        try {
+            sdf.parse(data);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+    
+    // Método para validar a hora no formato HH:mm
+    private static boolean validarHora(String hora) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        sdf.setLenient(false); // Impede horas inválidas como 25:00
+        try {
+            sdf.parse(hora);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
+    
+    public static Date converterStringParaSQLDate(String dataStr) {
+        try {
+            // Define o formato da data
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date dataUtil = sdf.parse(dataStr); // Converte para java.util.Date
+            return new Date(dataUtil.getTime()); // Converte para java.sql.Date
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, "A data informada é inválida!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+    
+    public static Time converterStringParaSQLTime(String horaStr) {
+        try {
+            // Define o formato da hora (HH:mm:)
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            java.util.Date dataUtil = sdf.parse(horaStr); // Converte para java.util.Date
+            return new Time(dataUtil.getTime()); // Converte para java.sql.Time
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(null, "A hora informada é inválida!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+        
 
 	// Método para preencher a tabela com os centros
 	private void carregarCentros() {
@@ -67,13 +136,15 @@ public class main extends javax.swing.JFrame {
 	        ResultSet rs = stmt.executeQuery(query);
 
 	        DefaultTableModel model = (DefaultTableModel) TB_Centro.getModel();
+                DefaultTableModel model2 = (DefaultTableModel) TB_Bib_Centros.getModel();
 	        model.setRowCount(0);  // Limpa a tabela antes de adicionar novos dados
 
 	        while (rs.next()) {
 	            Object[] row = { rs.getInt("cod_Centro"), rs.getString("sigla"), rs.getString("nome") };
 	            model.addRow(row);
                     Itens_Aluno_Centro.addItem(rs.getString("Sigla"));
-                    Itens_Bib_Centro.addItem(rs.getString("Sigla"));
+                    Object[] row2 = {false, rs.getString("Sigla")}; 
+                    model2.addRow(row2);
 	        }
 
 	        rs.close();
@@ -831,7 +902,9 @@ public class main extends javax.swing.JFrame {
         BT_Publicacao_Buscar = new javax.swing.JButton();
         BT_Publicacao_Cadastrar = new javax.swing.JButton();
         BT_Publicacao_Remover = new javax.swing.JButton();
-        jLabel26 = new javax.swing.JLabel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel27 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TB_Biblioteca = new javax.swing.JTable();
@@ -841,12 +914,13 @@ public class main extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         TF_Bib_Sigla = new javax.swing.JTextField();
         jLabel39 = new javax.swing.JLabel();
-        Itens_Bib_Centro = new javax.swing.JComboBox<>();
         jLabel23 = new javax.swing.JLabel();
         BT_Biblioteca_Buscar = new javax.swing.JButton();
         BT_Biblioteca_Cadastrar = new javax.swing.JButton();
         BT_Biblioteca_Remover = new javax.swing.JButton();
         BT_Biblioteca_Editar = new javax.swing.JButton();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        TB_Bib_Centros = new javax.swing.JTable();
         jPanel5 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         TB_Emprestimo = new javax.swing.JTable();
@@ -962,7 +1036,7 @@ public class main extends javax.swing.JFrame {
                             .addComponent(jLabel12))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                            .addComponent(TF_Centro_Sigla, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
                             .addComponent(TF_Centro_Nome))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -976,7 +1050,7 @@ public class main extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BT_Centro_Remover)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 959, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1042,6 +1116,11 @@ public class main extends javax.swing.JFrame {
         jLabel22.setText("Matricula:");
 
         Itens_Aluno_Centro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "none" }));
+        Itens_Aluno_Centro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Itens_Aluno_CentroActionPerformed(evt);
+            }
+        });
 
         jLabel21.setText("Centro:");
 
@@ -1091,7 +1170,7 @@ public class main extends javax.swing.JFrame {
                             .addComponent(TF_Aluno_Matricula)
                             .addComponent(TF_Aluno_Nome, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(TF_Aluno_Endereco, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Itens_Aluno_Centro, javax.swing.GroupLayout.Alignment.LEADING, 0, 266, Short.MAX_VALUE))
+                            .addComponent(Itens_Aluno_Centro, javax.swing.GroupLayout.Alignment.LEADING, 0, 500, Short.MAX_VALUE))
                         .addGap(18, 18, 18))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(17, 17, 17)
@@ -1250,7 +1329,32 @@ public class main extends javax.swing.JFrame {
             }
         });
 
-        jLabel26.setText("Autores:");
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "", "Autores"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane9.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setPreferredWidth(30);
+            jTable2.getColumnModel().getColumn(1).setPreferredWidth(500);
+        }
+
+        jLabel27.setText("Autores:");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -1259,54 +1363,22 @@ public class main extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel38)
-                                    .addComponent(CheckBox_Autoajuda))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(TF_Pub_Assunto))
+                        .addContainerGap(14, Short.MAX_VALUE)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(TF_Pub_Area))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel35))
+                                .addGap(36, 36, 36)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(TF_Pub_Nome)
+                                    .addComponent(TF_Pub_Ano, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel17)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                            .addComponent(jLabel36)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(TF_Pub_Edicao, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel37)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel16)
-                                                .addComponent(jLabel35))
-                                            .addGap(36, 36, 36)
-                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(TF_Pub_Nome, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                                                .addComponent(TF_Pub_Ano)))
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                            .addComponent(jLabel15)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(CheckBox_Academico, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(CheckBox_Literatura, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                                        .addComponent(CheckBox_Outro)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(18, 18, 18))
+                                .addComponent(jLabel15)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel18))
+                        .addGap(32, 32, 32))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
@@ -1317,12 +1389,56 @@ public class main extends javax.swing.JFrame {
                                     .addComponent(BT_Publicacao_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(BT_Publicacao_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addGap(18, 18, 18)
                                         .addComponent(BT_Publicacao_Remover))))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jLabel26)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jLabel27)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addComponent(CheckBox_Autoajuda)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(CheckBox_Literatura)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel36)
+                                            .addComponent(jLabel17))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(TF_Pub_Area, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(TF_Pub_Edicao, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(CheckBox_Academico)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                                        .addGap(0, 0, Short.MAX_VALUE)
+                                                        .addComponent(jLabel37))
+                                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                                        .addGap(43, 43, 43)
+                                                        .addComponent(jLabel38)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(CheckBox_Outro)
+                                                .addGap(42, 42, 42)))
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(TF_Pub_Tipo)
+                                            .addComponent(TF_Pub_Assunto)
+                                            .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))))
+                                .addGap(18, 18, 18)))))
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 793, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(223, 223, 223))
         );
@@ -1344,9 +1460,7 @@ public class main extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
                     .addComponent(Itens_Pub_Biblioteca, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel26)
-                .addGap(17, 17, 17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CheckBox_Academico)
@@ -1358,22 +1472,26 @@ public class main extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TF_Pub_Area, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel17))
-                .addGap(14, 14, 14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CheckBox_Literatura)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel37)
                     .addComponent(TF_Pub_Genero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(CheckBox_Autoajuda)
                 .addGap(2, 2, 2)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel38)
                     .addComponent(TF_Pub_Assunto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(TF_Pub_Tipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CheckBox_Outro))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel27)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BT_Publicacao_Editar)
@@ -1397,6 +1515,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Sigla", "Nome", "Endereço"
             }
         ));
+        TB_Biblioteca.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_BibliotecaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TB_Biblioteca);
         if (TB_Biblioteca.getColumnModel().getColumnCount() > 0) {
             TB_Biblioteca.getColumnModel().getColumn(1).setPreferredWidth(100);
@@ -1415,12 +1538,6 @@ public class main extends javax.swing.JFrame {
         });
 
         jLabel39.setText("Sigla:");
-
-        Itens_Bib_Centro.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Itens_Bib_CentroActionPerformed(evt);
-            }
-        });
 
         jLabel23.setText("Centro:");
 
@@ -1452,6 +1569,29 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        TB_Bib_Centros.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "", "Centro"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane8.setViewportView(TB_Bib_Centros);
+        if (TB_Bib_Centros.getColumnModel().getColumnCount() > 0) {
+            TB_Bib_Centros.getColumnModel().getColumn(0).setResizable(false);
+            TB_Bib_Centros.getColumnModel().getColumn(0).setPreferredWidth(20);
+            TB_Bib_Centros.getColumnModel().getColumn(1).setPreferredWidth(250);
+        }
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1459,21 +1599,16 @@ public class main extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addGap(30, 30, 30)
-                            .addComponent(TF_Bib_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel39)
-                                .addComponent(jLabel23))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(TF_Bib_Endereco)
-                                .addComponent(TF_Bib_Sigla)
-                                .addComponent(Itens_Bib_Centro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel39)
+                            .addComponent(jLabel23))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(TF_Bib_Sigla, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TF_Bib_Endereco, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(BT_Biblioteca_Cadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -1481,10 +1616,14 @@ public class main extends javax.swing.JFrame {
                             .addComponent(BT_Biblioteca_Buscar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(BT_Biblioteca_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(BT_Biblioteca_Remover)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(BT_Biblioteca_Remover))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(30, 30, 30)
+                        .addComponent(TF_Bib_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1035, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -1506,9 +1645,9 @@ public class main extends javax.swing.JFrame {
                     .addComponent(jLabel39)
                     .addComponent(TF_Bib_Sigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel23)
-                    .addComponent(Itens_Bib_Centro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BT_Biblioteca_Editar)
@@ -1532,6 +1671,11 @@ public class main extends javax.swing.JFrame {
                 "Codigo", "Data", "Hora", "Funcionário", "Publicação", "Aluno"
             }
         ));
+        TB_Emprestimo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TB_EmprestimoMouseClicked(evt);
+            }
+        });
         jScrollPane4.setViewportView(TB_Emprestimo);
         if (TB_Emprestimo.getColumnModel().getColumnCount() > 0) {
             TB_Emprestimo.getColumnModel().getColumn(0).setPreferredWidth(40);
@@ -1542,9 +1686,9 @@ public class main extends javax.swing.JFrame {
             TB_Emprestimo.getColumnModel().getColumn(5).setPreferredWidth(200);
         }
 
-        jLabel7.setText("Data:");
+        jLabel7.setText("Data(yyyy-mm-dd):");
 
-        jLabel8.setText("Hora:");
+        jLabel8.setText("Hora: (hh:mm:ss)");
 
         jLabel9.setText("Aluno");
 
@@ -1595,17 +1739,17 @@ public class main extends javax.swing.JFrame {
                                     .addComponent(jLabel9))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(Itens_Empres_Aluno, 0, 246, Short.MAX_VALUE)
+                                    .addComponent(Itens_Empres_Aluno, 0, 305, Short.MAX_VALUE)
                                     .addComponent(Itens_Empres_Publicacao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8))
-                                .addGap(59, 59, 59)
+                                .addGap(18, 18, 18)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(TF_Empres_Hora)
-                                    .addComponent(TF_Empres_Data)))
+                                    .addComponent(TF_Empres_Data)
+                                    .addComponent(TF_Empres_Hora)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGap(8, 8, 8)
                                 .addComponent(jLabel11)
@@ -1622,8 +1766,8 @@ public class main extends javax.swing.JFrame {
                                 .addComponent(BT_Emprestimo_Editar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BT_Emprestimo_Remover)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -1769,7 +1913,7 @@ public class main extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(Funcionario_Sal_Med, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 819, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1053, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -1897,7 +2041,7 @@ public class main extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BT_Autor_Remover)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1013, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -1975,7 +2119,7 @@ public class main extends javax.swing.JFrame {
             Table_Centro.addRow(data);
             
             Itens_Aluno_Centro.addItem(sigla);
-            Itens_Bib_Centro.addItem(sigla);
+
             
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
@@ -2064,10 +2208,6 @@ public class main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_TF_Bib_SiglaActionPerformed
 
-    private void Itens_Bib_CentroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Itens_Bib_CentroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_Itens_Bib_CentroActionPerformed
-
     private void BT_Centro_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Centro_RemoverActionPerformed
        
         //Testa se tem alguma linha selecionada
@@ -2085,7 +2225,7 @@ public class main extends javax.swing.JFrame {
             TF_Centro_Nome.setText("");
             TF_Centro_Sigla.setText("");
             Itens_Aluno_Centro.removeItem(sigla);
-            Itens_Bib_Centro.removeItem(sigla);
+
             JOptionPane.showMessageDialog(null, "Centro removido com sucesso.", 
                                               "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         }    
@@ -2423,7 +2563,7 @@ public class main extends javax.swing.JFrame {
         String matricula = TF_Aluno_Matricula.getText();
     
         try{
-            if(nome.isEmpty() || endereco.isEmpty() || matricula.isEmpty()){
+            if(nome.isEmpty() || endereco.isEmpty() || matricula.isEmpty() || centro.equals("none")){
                 throw new CamposNaoInformados();
             }
             else if (nome.length()>50){
@@ -2752,9 +2892,9 @@ public class main extends javax.swing.JFrame {
                 throw new PubAnoGrande();
             }
             
-            int fk = DAO_Biblioteca.PullBiblioteca(biblioteca);
-            int cod = new DAO_General().ReturnLastCod("Publicacao") + 1;
+            int fk = DAO_Biblioteca.PullBiblioteca(biblioteca);    
             new DAO_Publicacao().CadastrarPublicacao(new Publicacao(tipo, Integer.parseInt(ano), nome, fk));
+            int cod = new DAO_General().ReturnLastCod("Publicacao");
           
             DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Publicacao.getModel();
             Object[] data = {cod, nome, ano, biblioteca, tipo};
@@ -2817,7 +2957,6 @@ public class main extends javax.swing.JFrame {
             String tipo = (String) TB_Publicacao.getValueAt(TB_Publicacao.getSelectedRow(), 4);
             
             DefaultTableModel Table_Aluno = (DefaultTableModel)TB_Publicacao.getModel();
-            Table_Aluno.removeRow(TB_Publicacao.getSelectedRow());
             
             if (tipo.equals("Acadêmico")){
                 new DAO_Publicacao().RemoverAcademico(id);
@@ -2829,8 +2968,8 @@ public class main extends javax.swing.JFrame {
                 new DAO_Publicacao().RemoverAutoajuda(id);
             }
             
-
             new DAO_Publicacao().RemoverPublicacao(id);
+            Table_Aluno.removeRow(TB_Publicacao.getSelectedRow());
             
             String nome = TF_Pub_Nome.getText();
             TF_Pub_Nome.setText("");
@@ -2853,15 +2992,111 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Publicacao_RemoverActionPerformed
 
     private void BT_Biblioteca_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Biblioteca_BuscarActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_BT_Biblioteca_BuscarActionPerformed
 
     private void BT_Biblioteca_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Biblioteca_CadastrarActionPerformed
-        // TODO add your handling code here:
+        
+        String nome = TF_Bib_Nome.getText(); 
+        String endereco = TF_Bib_Endereco.getText(); 
+        String sigla = TF_Bib_Sigla.getText();
+ 
+    
+        try{
+            if(nome.isEmpty() || endereco.isEmpty() || sigla.isEmpty()){
+                throw new CamposNaoInformados();
+            }
+            else if (nome.length()>50){
+                throw new CentroSiglaGrande();
+            }
+            else if (endereco.length()>100){
+                throw new NomeGrande();
+            }
+            else if(DAO_Biblioteca.TestaSigla(TF_Bib_Sigla.getText()) == true){
+                throw new CentroSiglaUsada();
+            }
+            
+            new DAO_Biblioteca().CadastrarBiblioteca(new Biblioteca(endereco, nome, sigla));
+            int id = new DAO_General().ReturnLastCod("Biblioteca");
+          
+            DefaultTableModel Table_Biblioteca = (DefaultTableModel)TB_Biblioteca.getModel();
+            Object[] data = {id, nome,sigla, endereco};
+            Table_Biblioteca.addRow(data);
+            
+            
+            if(!BibCentroIsEmpty()){
+
+            for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                if((Boolean)TB_Bib_Centros.getValueAt(i, 0) == true){
+                    int temp = DAO_Aluno.PullCentro((String)TB_Bib_Centros.getValueAt(i, 1));
+                    System.out.println(temp);
+                    new DAO_Biblioteca().CadastrarPertence(new Pertence(id, temp));
+                }
+            }
+   
+            }
+            
+            
+            
+            
+            Itens_Pub_Biblioteca.addItem(nome);
+            TF_Bib_Nome.setText("");
+            TF_Bib_Sigla.setText("");
+            TF_Bib_Endereco.setText("");
+
+            
+            JOptionPane.showMessageDialog(null, "Biblioteca cadastrada com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(CentroSiglaGrande e){
+            JOptionPane.showMessageDialog(null, "O nome pode ter no máximo 50 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(NomeGrande e){
+            JOptionPane.showMessageDialog(null, "O endereco pode ter no máximo 100 caracteres!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(CentroSiglaUsada e){
+            JOptionPane.showMessageDialog(null, "A sigla informada já está sendo usada!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
     }//GEN-LAST:event_BT_Biblioteca_CadastrarActionPerformed
 
     private void BT_Biblioteca_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Biblioteca_RemoverActionPerformed
-        // TODO add your handling code here:
+        //Testa se tem alguma linha selecionada
+        if(TB_Biblioteca.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Biblioteca.getValueAt(TB_Biblioteca.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Biblioteca = (DefaultTableModel)TB_Biblioteca.getModel();
+            Table_Biblioteca.removeRow(TB_Biblioteca.getSelectedRow());
+            
+            if(!BibCentroIsEmpty()){
+                new DAO_Biblioteca().RemoverPertence(id);
+            }
+            System.out.println(id);
+            new DAO_Biblioteca().RemoverBiblioteca(id);
+            System.out.println("oi1");
+            
+            String nome = TF_Bib_Nome.getText();
+            TF_Bib_Nome.setText("");
+            TF_Bib_Sigla.setText("");
+            TF_Bib_Endereco.setText("");
+            Itens_Pub_Biblioteca.removeItem(nome);
+            JOptionPane.showMessageDialog(null, "Biblioteca removida com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
+        
     }//GEN-LAST:event_BT_Biblioteca_RemoverActionPerformed
 
     private void BT_Biblioteca_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Biblioteca_EditarActionPerformed
@@ -2873,15 +3108,154 @@ public class main extends javax.swing.JFrame {
     }//GEN-LAST:event_BT_Emprestimo_BuscarActionPerformed
 
     private void BT_Emprestimo_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Emprestimo_CadastrarActionPerformed
-        // TODO add your handling code here:
+        String data = TF_Empres_Data.getText(); 
+        String hora = TF_Empres_Hora.getText(); 
+        String funcionario = (String)Itens_Empres_Funcionario.getSelectedItem();
+        String publicacao = (String)Itens_Empres_Publicacao.getSelectedItem();
+        String aluno = (String)Itens_Empres_Aluno.getSelectedItem();
+    
+        try{
+            if(data.isEmpty() || hora.isEmpty() || funcionario.isEmpty() || publicacao.isEmpty() || aluno.isEmpty()){
+                throw new CamposNaoInformados();
+            }
+            
+            
+            new DAO_Emprestimo().CadastrarEmprestimo(new Emprestimo(converterStringParaSQLDate(data), converterStringParaSQLTime(hora), DAO_Emprestimo.PullPublicacao(publicacao), DAO_Emprestimo.PullAluno(aluno), DAO_Emprestimo.PullFuncionario(funcionario)));
+          
+            DefaultTableModel Table_Emprestimo = (DefaultTableModel)TB_Emprestimo.getModel();
+            int id = new DAO_General().ReturnLastCod("Emprestimo");
+            Object[] dados = {id, data, hora, funcionario, publicacao, aluno};
+            Table_Emprestimo.addRow(dados);
+            
+            TF_Empres_Data.setText("");
+            TF_Empres_Hora.setText("");
+            
+            JOptionPane.showMessageDialog(null, "Emprestimo cadastrado com sucesso!", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(CamposNaoInformados e){
+            JOptionPane.showMessageDialog(null, "Por favor, preencha todos os campos!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_BT_Emprestimo_CadastrarActionPerformed
 
     private void BT_Emprestimo_RemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Emprestimo_RemoverActionPerformed
-        // TODO add your handling code here:
+         if(TB_Emprestimo.getSelectedRow() != -1){
+        
+            //Pega o codigo da linha selecionada
+            int id = (int) TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 0);
+            
+            DefaultTableModel Table_Emprestimo = (DefaultTableModel)TB_Emprestimo.getModel();
+            Table_Emprestimo.removeRow(TB_Emprestimo.getSelectedRow());
+           
+            new DAO_Emprestimo().RemoverEmprestimo(id);
+            
+            TF_Empres_Data.setText("");
+            TF_Empres_Hora.setText("");
+            Itens_Empres_Aluno.setSelectedIndex(0);
+            Itens_Empres_Funcionario.setSelectedIndex(0);
+            Itens_Empres_Publicacao.setSelectedIndex(0);
+            JOptionPane.showMessageDialog(null, "Emprestimo removido com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        }    
+        else
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma linha.", 
+                                              "Erro", JOptionPane.ERROR_MESSAGE);
     }//GEN-LAST:event_BT_Emprestimo_RemoverActionPerformed
 
     private void BT_Emprestimo_EditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Emprestimo_EditarActionPerformed
-        // TODO add your handling code here:
+         try{
+            if(TB_Emprestimo.getSelectedRow()==-1){
+                throw new LinhaNaoSelecionada();
+            }
+            else{
+                int linha = TB_Emprestimo.getSelectedRow();
+                Date DataNew = converterStringParaSQLDate(TF_Empres_Data.getText());
+                Time HoraNew = converterStringParaSQLTime(TF_Empres_Hora.getText());
+                String FuncionarioNew = (String) Itens_Empres_Funcionario.getSelectedItem();
+                String AlunoNew = (String) Itens_Empres_Aluno.getSelectedItem();
+                String PublicacaoNew = (String) Itens_Empres_Publicacao.getSelectedItem();
+                
+                // 1. Obter e converter o valor da coluna 1 para java.sql.Date
+                Object valorData = TB_Emprestimo.getValueAt(linha, 1); // Obtém o valor como Object
+                Date DataOld = null;
+
+                if (valorData instanceof Date) {
+                    DataOld = (Date) valorData; // Cast direto
+                } else if (valorData instanceof String) {
+                    // Caso o valor seja uma String, converte para java.sql.Date
+                    DataOld = Date.valueOf((String) valorData);
+                }
+
+                // 2. Obter e converter o valor da coluna 2 para java.sql.Time
+                Object valorHora = TB_Emprestimo.getValueAt(linha, 2); // Obtém o valor como Object
+                Time HoraOld = null;
+
+                if (valorHora instanceof Time) {
+                    HoraOld = (Time) valorHora; // Cast direto
+                } else if (valorHora instanceof String) {
+                    // Caso o valor seja uma String, converte para java.sql.Time
+                    HoraOld = Time.valueOf((String) valorHora);
+                }
+                
+                int id = (int) TB_Emprestimo.getValueAt(linha,0);
+                String FuncionarioOld = (String) TB_Emprestimo.getValueAt(linha,3);
+                String AlunoOld = (String) TB_Emprestimo.getValueAt(linha,4);
+                String PublicacaoOld = (String) TB_Emprestimo.getValueAt(linha,5);
+            
+                //testa se as informacoes fornecidas sao diferentes das ja cadastrados
+                if(DataNew.compareTo(DataOld)==0 && HoraNew.compareTo(HoraOld)==0 && FuncionarioNew.equals(FuncionarioOld) && AlunoNew.equals(AlunoOld) && PublicacaoNew.equals(PublicacaoOld)){
+                    throw new CentroEdicaoIgual();       
+                }
+                else{
+          
+                    //testa se o nome fornecido é diferente do já cadastrado
+                    if(DataNew.compareTo(DataOld)!=0){
+                        new DAO_Emprestimo().EditarData(id, DataOld, DataNew); 
+                        TB_Emprestimo.setValueAt(DataNew, linha, 1);
+                    }
+                
+
+                    if(HoraNew.compareTo(HoraOld)!=0){
+                        new DAO_Emprestimo().EditarHora(id, HoraOld, HoraNew); 
+                        TB_Emprestimo.setValueAt(HoraNew, linha, 2);
+                    }
+                    
+                    if(!FuncionarioNew.equals(FuncionarioOld)){
+                        new DAO_Emprestimo().EditarFuncionario(id, PullFuncionario(FuncionarioOld), PullFuncionario(FuncionarioNew)); 
+                        TB_Emprestimo.setValueAt(FuncionarioNew, linha, 3);
+                    }
+                    
+                    if(!PublicacaoNew.equals(PublicacaoOld)){
+                        new DAO_Emprestimo().EditarPublicacao(id, PullPublicacao(PublicacaoOld), PullPublicacao(PublicacaoNew)); 
+                        TB_Emprestimo.setValueAt(PublicacaoNew, linha, 4);
+                    }
+                    
+                    if(!AlunoNew.equals(AlunoOld)){
+                        new DAO_Emprestimo().EditarAluno(id, PullAluno(AlunoOld), PullAluno(AlunoNew)); 
+                        TB_Emprestimo.setValueAt(AlunoNew, linha, 5);
+                    }
+                
+                    JOptionPane.showMessageDialog(null, "Edição realizada com sucesso.", 
+                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    TF_Empres_Data.setText("");
+                    TF_Empres_Hora.setText("");
+                    Itens_Empres_Publicacao.setSelectedIndex(0);
+                    Itens_Empres_Aluno.setSelectedIndex(0);
+                    Itens_Empres_Funcionario.setSelectedIndex(0);
+
+                }
+            
+            }
+        }
+        catch(CentroEdicaoIgual e){
+            JOptionPane.showMessageDialog(null, "Por favor, altere algum campo para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+        catch(LinhaNaoSelecionada e){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione alguma linha para realizar a edição!", 
+                                                  "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_BT_Emprestimo_EditarActionPerformed
 
     private void BT_Funcionario_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BT_Funcionario_BuscarActionPerformed
@@ -3228,11 +3602,12 @@ public class main extends javax.swing.JFrame {
     
         String tipo = String.valueOf(TB_Publicacao.getValueAt(linha, 4));
         
-        int id = Integer.parseInt(TB_Publicacao.getValueAt(linha, 0).toString());
+        int id = (int) TB_Publicacao.getValueAt(linha, 0);
         System.out.println(id);
         
         if(tipo.equals("Acadêmico")){
             Academico temp = new DAO_Publicacao().BuscarAcademico(id);
+            System.out.println(temp==null);
             String mensagem = String.format("Área: %s \n Edição: %s", temp.getArea(), temp.getEdicao());         
             JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
             CheckBox_Academico.setSelected(true);
@@ -3317,6 +3692,96 @@ public class main extends javax.swing.JFrame {
         TF_Autor_Pais.setText((String) TB_Autor.getValueAt(TB_Autor.getSelectedRow(), 2));
     }//GEN-LAST:event_TB_AutorMouseClicked
 
+    private void Itens_Aluno_CentroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Itens_Aluno_CentroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Itens_Aluno_CentroActionPerformed
+
+    private void TB_BibliotecaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_BibliotecaMouseClicked
+        TF_Bib_Nome.setText((String) TB_Biblioteca.getValueAt(TB_Biblioteca.getSelectedRow(), 2));
+        String sigla = String.valueOf(TB_Biblioteca.getValueAt(TB_Biblioteca.getSelectedRow(), 1));
+        TF_Bib_Sigla.setText(sigla);
+        TF_Bib_Endereco.setText((String) TB_Biblioteca.getValueAt(TB_Biblioteca.getSelectedRow(), 3));
+        
+        int fk = DAO_Publicacao.PullBiblioteca(sigla);
+        
+        try {
+	        //String query = "SELECT * FROM Pertence where fk_Cod_Biblioteca=?"; 
+                
+                String query = "select c.sigla from Pertence join Centro c ON c.Cod_Centro=fk_Cod_centro where fk_Cod_Centro=?";
+                
+                
+                
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                ps = SQL_connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, fk);
+                rs = ps.executeQuery();
+                
+	        DefaultTableModel model = (DefaultTableModel) TB_Bib_Centros.getModel();
+                
+                for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                            model.setValueAt(false, i, 0);
+                    }
+                
+
+	        while (rs.next()) {
+
+                    for(int i=0 ; i<TB_Bib_Centros.getRowCount(); i++){
+                        System.out.println(rs.getString("Sigla"));
+                        if((Boolean)TB_Bib_Centros.getValueAt(i, 1).equals(rs.getString("Sigla"))){
+                            model.setValueAt(true, i, 0);
+                        }
+                    }
+                   
+	        }
+
+	        rs.close();
+	        ps.close();
+
+	    } catch (SQLException ex) {
+	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
+	    }
+        
+    }//GEN-LAST:event_TB_BibliotecaMouseClicked
+
+    private void TB_EmprestimoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TB_EmprestimoMouseClicked
+        // 1. Criando os formatadores
+        SimpleDateFormat sdfData = new SimpleDateFormat("yyyy-MM-dd"); // Formato para Data
+        SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm:ss");   // Formato para Hora
+
+        // 2. Obtendo a data da tabela na coluna 1
+        Object valorData = TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 1);
+
+        if (valorData instanceof Date) {
+            // Se for do tipo Date, formata diretamente
+            TF_Empres_Data.setText(sdfData.format((Date) valorData));
+        } else if (valorData instanceof String) {
+            // Se for uma String, exibe diretamente
+            TF_Empres_Data.setText((String) valorData);
+        } else {
+            TF_Empres_Data.setText("Data inválida!"); // Tratamento de erro
+        }
+
+        // 3. Obtendo a hora da tabela na coluna 2
+        Object valorHora = TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 2);
+
+        if (valorHora instanceof Time) {
+            // Se for do tipo Time, formata diretamente
+            TF_Empres_Hora.setText(sdfHora.format((Time) valorHora));
+        } else if (valorHora instanceof String) {
+            // Se for uma String, exibe diretamente
+            TF_Empres_Hora.setText((String) valorHora);
+        } else {
+            TF_Empres_Hora.setText("Hora inválida!"); // Tratamento de erro
+        }
+
+        // 4. Configurando os demais campos
+        Itens_Empres_Funcionario.setSelectedItem((String) TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 3));
+        Itens_Empres_Publicacao.setSelectedItem((String) TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 4));
+        Itens_Empres_Aluno.setSelectedItem((String) TB_Emprestimo.getValueAt(TB_Emprestimo.getSelectedRow(), 5));
+
+    }//GEN-LAST:event_TB_EmprestimoMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -3389,13 +3854,13 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel Funcionario_Sal_Med;
     private javax.swing.JLabel Funcionario_Sal_Min;
     private javax.swing.JComboBox<String> Itens_Aluno_Centro;
-    private javax.swing.JComboBox<String> Itens_Bib_Centro;
     private javax.swing.JComboBox<String> Itens_Empres_Aluno;
     private javax.swing.JComboBox<String> Itens_Empres_Funcionario;
     private javax.swing.JComboBox<String> Itens_Empres_Publicacao;
     private javax.swing.JComboBox<String> Itens_Pub_Biblioteca;
     private javax.swing.JTable TB_Aluno;
     private javax.swing.JTable TB_Autor;
+    private javax.swing.JTable TB_Bib_Centros;
     private javax.swing.JTable TB_Biblioteca;
     private javax.swing.JTable TB_Centro;
     private javax.swing.JTable TB_Emprestimo;
@@ -3444,7 +3909,7 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
@@ -3471,6 +3936,9 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable2;
     // End of variables declaration//GEN-END:variables
 }

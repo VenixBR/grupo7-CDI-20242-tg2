@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import Entitys.Biblioteca;
+import Entitys.Pertence;
 import biblioteca.SQL_connection;
 
 public class DAO_Biblioteca{
@@ -28,6 +29,25 @@ public class DAO_Biblioteca{
             e.printStackTrace();
         }
     }
+    
+    public void CadastrarPertence(Pertence pertence){
+
+        String SQL_command = "INSERT INTO Pertence (fk_Cod_Biblioteca, fk_Cod_Centro) VALUES (?, ?)";
+
+        PreparedStatement ps = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setInt(1, pertence.getFk_Cod_Biblioteca());
+            ps.setInt(2, pertence.getFk_Cod_Centro());
+           
+            ps.execute();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 
     public Biblioteca BuscarBiblioteca(int Cod_Biblioteca){
 
@@ -86,6 +106,70 @@ public class DAO_Biblioteca{
             }
         }
     }
+    
+     public void RemoverPertence(int Cod_Biblioteca) {
+
+        String SQL_command = "DELETE FROM Pertence WHERE fk_Cod_Biblioteca=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            
+            ps.setInt(1, Cod_Biblioteca);
+            
+            // Executa a consulta para remover a biblioteca
+            ps.executeUpdate();  // Aqui usamos executeUpdate() porque estamos fazendo uma operação de DELETE
+
+        } catch (SQLException e) {
+            e.printStackTrace();  
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    
+    
+    public static boolean TestaSigla(String sigla){
+        
+        boolean flag = false;
+        String SQL_command = "SELECT COUNT(*) AS Result FROM Biblioteca WHERE Sigla=?";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            ps = SQL_connection.getConnection().prepareStatement(SQL_command);
+            ps.setString(1,sigla);
+            rs = ps.executeQuery();
+           
+            
+        if(rs.next()){
+            if (rs.getInt("Result") > 0) {
+                flag = true;
+            }
+        }
+          
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return flag;
+         
+    } 
+    
+    
     
     public static int PullBiblioteca(String sigla){
         

@@ -10,6 +10,16 @@ public class Emprestimo {
     private int fk_Cod_Publicacao;
     private int fk_Matricula;
     private int fk_Cod_Funcionario;
+    
+    public Emprestimo(java.sql.Date data, java.sql.Time hora, int cod_publicacao, int matricula, int cod_funcionario){
+        Data_ = data;  
+        Hora = hora;
+        fk_Cod_Publicacao = cod_publicacao;
+        fk_Matricula = matricula;
+        fk_Cod_Funcionario = cod_funcionario;
+    }
+    
+    public Emprestimo(){}
 
     public int getCod_Emprestimo() {
         return Cod_Emprestimo;
