@@ -27,9 +27,16 @@ VALUES
 
 INSERT INTO Pertence (fk_Cod_Biblioteca, fk_Cod_Centro)
 VALUES
-  (01, 01),
-  (02, 02),
-  (03, 03);
+  (02, 01), 
+  (03, 02), 
+  (04, 03), 
+  (05, 04), 
+  (06, 05), 
+  (07, 06), 
+  (08, 07), 
+  (09, 08), 
+  (10, 09), 
+  (11, 10);
 
 INSERT INTO Aluno (Matricula, Endereco, Nome, fk_Cod_Centro)
 VALUES
@@ -47,7 +54,7 @@ VALUES
   (202220011, 'Avenida dos Eucaliptos', 'Claudio Ranieri', 02),
   (202220012, 'Rua da Paz', 'Marcelo Bielsa', 03),
   (202220013, 'Rua do Parque', 'Tite', 04),
-  (202220014, 'Avenida do Mar', 'Luis Enrique', 05);
+  (202220014, 'Avenida do Mar', 'Luis Enrique', 05),
   (202220015, 'Rua das Palmeiras', 'Jürgen Klopp', 06),
   (202220016, 'Avenida dos Girassóis', 'Mauricio Pochettino', 05),
   (202220017, 'Rua do Horizonte', 'Joachim Löw', 02),
@@ -75,7 +82,7 @@ VALUES
   (12, '9150.30', 'Harry Kane'),
   (13, '8800.45', 'Alan Patrick'),
   (14, '9250.00', 'Erling Haaland'),
-  (15, '10050.60', 'Enner Valência');
+  (15, '10050.60', 'Enner Valência'),
   (16, '10100.00', 'Casemiro'),
   (17, '8800.70', 'Paul Pogba'),
   (18, '9700.90', 'Andrés Iniesta'),
@@ -98,7 +105,7 @@ VALUES
   (07, 'Jane Austen', 'Reino Unido'),
   (08, 'Mark Twain', 'Estados Unidos'),
   (09, 'Machado de Assis', 'Brasil'),
-  (10, 'Ernest Hemingway', 'Estados Unidos');
+  (10, 'Ernest Hemingway', 'Estados Unidos'),
   (11, 'Edgar Allan Poe', 'Estados Unidos'),
   (12, 'Jorge Amado', 'Brasil'),
   (13, 'Fernando Pessoa', 'Portugal'),
@@ -118,7 +125,7 @@ VALUES
   (04, 'Literatura', '2021', 'Romance Clássico', 04),
   (05, 'Autoajuda', '2022', 'O Poder do Hábito', 05),
   (06, 'Literatura', '2017', 'O Senhor dos Anéis', 06),
-  (07, 'Acadêmico', '2020', 'Física para Engenheiros', 07);
+  (07, 'Acadêmico', '2020', 'Física para Engenheiros', 07),
   (08, 'Literatura', '2016', '1984', 01),
   (09, 'Autoajuda', '2023', 'Como Fazer Amigos e Influenciar Pessoas', 02),
   (10, 'Acadêmico', '2021', 'Aprendizado de Máquina', 03),
@@ -138,7 +145,7 @@ VALUES
   (04, 'Romance', 04),
   (05, 'Psicologia', 05),
   (06, 'Ficção Fantástica', 06),
-  (07, 'Física', 07);
+  (07, 'Física', 07),
   (08, 'Filosofia', 10),
   (09, 'Matemática Aplicada', 11),
   (10, 'Psicologia', 12),
@@ -149,14 +156,14 @@ INSERT INTO Literatura (Genero_Textual, fk_Cod_Publicacao)
 VALUES
   ('Ficção Científica', 04),
   ('Romance', 06),
-  ('Aventura', 07);
+  ('Aventura', 07),
   ('Drama', 08),
   ('Biografia', 13),
   ('Clássico', 16);
 
 INSERT INTO Autoajuda (Assunto, fk_Cod_Publicacao)
 VALUES
-  ('Desenvolvimento Pessoal', 5);
+  ('Desenvolvimento Pessoal', 5),
   ('Liderança', 9),
   ('Mudança de Mentalidade', 12),
   ('Produtividade', 17);
@@ -169,7 +176,7 @@ VALUES
   (04, 07),
   (05, 04),
   (06, 06),
-  (07, 08);
+  (07, 08),
   (08, 02),
   (09, 15),
   (10, 03),
@@ -190,7 +197,7 @@ VALUES
   (04, '2024-02-20', '11:20:00', 4, 202220003, 04),
   (05, '2024-02-21', '14:45:00', 5, 202220004, 05),
   (06, '2024-03-05', '09:30:00', 6, 202220005, 06),
-  (07, '2024-03-10', '13:00:00', 7, 202220006, 07);
+  (07, '2024-03-10', '13:00:00', 7, 202220006, 07),
   (08, '2024-03-15', '10:00:00', 8, 202220015, 08),
   (09, '2024-03-16', '11:30:00', 9, 202220016, 09),
   (10, '2024-03-17', '12:45:00', 10, 202220017, 10),
