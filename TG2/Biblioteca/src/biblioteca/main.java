@@ -3812,6 +3812,11 @@ public class main extends javax.swing.JFrame {
         
         int fk = DAO_Publicacao.PullBiblioteca(sigla);
         
+       
+        String mensagem = "Centros: \n";
+             
+        
+        
         try {
 	        //String query = "SELECT * FROM Pertence where fk_Cod_Biblioteca=?"; 
                 
@@ -3838,6 +3843,7 @@ public class main extends javax.swing.JFrame {
                         System.out.println(rs.getString("Sigla"));
                         if((Boolean)TB_Bib_Centros.getValueAt(i, 1).equals(rs.getString("Sigla"))){
                             model.setValueAt(true, i, 0);
+                            mensagem +=  rs.getString("Sigla") + "\n";
                         }
                     }
                    
@@ -3849,6 +3855,7 @@ public class main extends javax.swing.JFrame {
 	    } catch (SQLException ex) {
 	        JOptionPane.showMessageDialog(this, "Erro ao carregar dados: " + ex.getMessage());
 	    }
+        JOptionPane.showMessageDialog(null, mensagem, null, JOptionPane.PLAIN_MESSAGE);
         
     }//GEN-LAST:event_TB_BibliotecaMouseClicked
 
